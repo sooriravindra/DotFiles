@@ -39,7 +39,7 @@ vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
 
-" Vundle stuff starts here
+" Vundle stuff starts here >>>>>>>>>>>
 
 filetype off
 
@@ -55,6 +55,8 @@ Plugin 'VundleVim/Vundle.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
+" end of Vundle stuff <<<<<<<<<<<<<<<<<<<<
+
 " Set nerdtree config
 map <C-o> :NERDTreeToggle<CR>
 " Make NerdTRee open files in new tab by default
@@ -69,3 +71,5 @@ set enc=utf-8
 " Tabs have sensible colours
 hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
 
+" Ignores case during search
+" set ignorecase
