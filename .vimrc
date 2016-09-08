@@ -39,6 +39,33 @@ vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
 
+" Following function and mapping allow smooth scrolling using ^d and ^u
+" Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
+
+function SmoothScroll(up)
+    if a:up
+        let scrollaction="k"
+    else
+        let scrollaction="j"
+    endif
+    exec "normal " . scrollaction
+    redraw
+    let counter=1
+    let scrollsize=15
+    while counter<scrollsize
+        let counter+=1
+        sleep 10m
+        redraw
+        exec "normal " . scrollaction
+    endwhile
+endfunction
+
+
+nnoremap <C-U> :call SmoothScroll(1)<Enter>
+nnoremap <C-D> :call SmoothScroll(0)<Enter>
+inoremap <C-U> <Esc>:call SmoothScroll(1)<Enter>i
+inoremap <C-D> <Esc>:call SmoothScroll(0)<Enter>i
+
 " Vundle stuff starts here >>>>>>>>>>>
 
 filetype off
@@ -62,8 +89,8 @@ map <C-o> :NERDTreeToggle<CR>
 " Make NerdTRee open files in new tab by default
 
 " In case utf-8 support is not present, use ascii chars in NerdTree
-let g:NERDTreeDirArrowExpandable = '>'
-let g:NERDTreeDirArrowCollapsible = 'v'
+" let g:NERDTreeDirArrowExpandable = '>'
+" let g:NERDTreeDirArrowCollapsible = 'v'
 
 " Enables utf-8 chars in Vim
 set enc=utf-8
