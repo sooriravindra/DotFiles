@@ -76,8 +76,8 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-
-" Plugin 'scrooloose/nerdtree'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'scrooloose/nerdtree'
 " Keep Plugin commands between vundle#begin/end.
 call vundle#end()            " required
 filetype plugin indent on    " required
