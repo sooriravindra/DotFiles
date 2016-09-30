@@ -1,13 +1,16 @@
 " Set 256 colour mode
 set t_Co=256
 
+" Enables utf-8 chars in Vim
+set enc=utf-8
+
 " Set terminal to Xterm to make special keys work rightEg: <Home>
 " set term=xterm-256color
 
 " Commands for setting the solarized dark theme with syntax highlighting
 syntax enable
 set background=dark
-" colorscheme solarized 
+" colorscheme solarized
 
 " Set tab as space with 4 characters
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
@@ -39,6 +42,37 @@ vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
 
+"Make the split seperator more cleaner
+hi VertSplit ctermbg=250 ctermfg=236
+set fillchars+=vert:│
+
+"" -- Let power line handle the following --
+" Show line number and percent in the command line
+" set ruler
+" Tabs have sensible colours
+" hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
+
+"" Ignores case during search
+" set ignorecase
+
+" Quick swap buffers
+nnoremap <leader>\ <C-^>
+
+" Toggle status bar at <leader-t>
+let g:ToggleStatusShow = 0
+function ToggleStatus()
+    if g:ToggleStatusShow == 0
+        set laststatus=2
+        let g:ToggleStatusShow = 1
+    else
+        set laststatus=1
+        let g:ToggleStatusShow = 0
+    endif
+endfunction
+
+nnoremap <leader>t :call ToggleStatus()<Enter>
+
+
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
 
@@ -66,7 +100,8 @@ nnoremap <C-D> :call SmoothScroll(0)<Enter>
 inoremap <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
-" Vundle stuff starts here >>>>>>>>>>>
+" --------------------------------
+"  Vundle stuff starts here {
 
 filetype off
 
@@ -75,28 +110,67 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " let Vundle manage Vundle, required
+
 Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'ctrlpvim/ctrlp.vim'
+
+Plugin 'vim-airline/vim-airline'
+
+Plugin 'vim-airline/vim-airline-themes'
+
 Plugin 'christoomey/vim-tmux-navigator'
+
 Plugin 'scrooloose/nerdtree'
+
 " Keep Plugin commands between vundle#begin/end.
+
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-" end of Vundle stuff <<<<<<<<<<<<<<<<<<<<
+" } end of Vundle stuff
+
+"
+"  -------- Configure plugins hence forth ---------------
+"
+
 
 " Set nerdtree config
 map <C-o> :NERDTreeToggle<CR>
-" Make NerdTRee open files in new tab by default
 
-" In case utf-8 support is not present, use ascii chars in NerdTree
+"" In case utf-8 support is not present, use ascii chars in NerdTree
 " let g:NERDTreeDirArrowExpandable = '>'
 " let g:NERDTreeDirArrowCollapsible = 'v'
 
-" Enables utf-8 chars in Vim
-set enc=utf-8
+" CtrlP configuration
+nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>p :CtrlP<CR>
 
-" Tabs have sensible colours
-hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='wombat'
 
-" Ignores case during search
-" set ignorecase
+"" Enable the following unicode if the font is unavailable on the terminal
+"" unicode symbols
+"let g:airline_left_sep = '»'
+"let g:airline_left_sep = '▶'
+"let g:airline_right_sep = '«'
+"let g:airline_right_sep = '◀'
+"let g:airline_symbols.linenr = '␊'
+"let g:airline_symbols.linenr = '␤'
+"let g:airline_symbols.linenr = '¶'
+"let g:airline_symbols.branch = '⎇'
+"let g:airline_symbols.paste = 'ρ'
+"let g:airline_symbols.paste = 'Þ'
+"let g:airline_symbols.paste = '∥'
+"let g:airline_symbols.whitespace = 'Ξ'
+"
+"" airline symbols
+"let g:airline_left_sep = ''
+"let g:airline_left_alt_sep = ''
+"let g:airline_right_sep = ''
+"let g:airline_right_alt_sep = ''
+"let g:airline_symbols.branch = ''
+"let g:airline_symbols.readonly = ''
+"let g:airline_symbols.linenr = ''
+
