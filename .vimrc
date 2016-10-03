@@ -56,6 +56,9 @@ set fillchars+=vert:│
 set ruler
 set rulerformat=\»\ \%c\ \«\ \%P\ \%L
 
+set cursorline
+hi CursorLine   cterm=NONE ctermbg=235
+
 "" -- Let power line handle the following --
 " Tabs have sensible colours
 " hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
@@ -63,8 +66,14 @@ set rulerformat=\»\ \%c\ \«\ \%P\ \%L
 "" Ignores case during search
 " set ignorecase
 
+" Let us use space as leader. So that we can use both L & R hand
+let mapleader=" "
 " Quick swap buffers
-nnoremap <leader>\ <C-^>
+nnoremap <leader><leader> <C-^>
+
+" Navigate buffers
+nnoremap <leader>k :bp<CR>
+nnoremap <leader>j :bn <CR>
 
 " Toggle status bar at <leader-t>
 let g:ToggleStatusShow = 0
@@ -79,8 +88,6 @@ function ToggleStatus()
 endfunction
 
 nnoremap <leader>t :call ToggleStatus()<Enter>
-vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
-nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
@@ -128,7 +135,9 @@ Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-vinegar'
+
+"Plugin 'scrooloose/nerdtree'
 
 Plugin 'scrooloose/nerdcommenter'
 
@@ -144,24 +153,29 @@ filetype plugin indent on    " required
 "
 
 
-" -----NERDTree----
-map <C-o> :NERDTreeToggle<CR>
+"" -----NERDTree----
+"map <C-o> :NERDTreeToggle<CR>
 
-" Quit vim if NERDTree is the only open window
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"" Quit vim if NERDTree is the only open window
+""autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" If no file is specified open nerd tree
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+"" If no file is specified open nerd tree
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-let NERDTreeShowHidden=1
-"" In case utf-8 support is not present, use ascii chars in NerdTree
-" let g:NERDTreeDirArrowExpandable = '>'
-" let g:NERDTreeDirArrowCollapsible = 'v'
+"let NERDTreeShowHidden=1
+""" In case utf-8 support is not present, use ascii chars in NerdTree
+"" let g:NERDTreeDirArrowExpandable = '>'
+"" let g:NERDTreeDirArrowCollapsible = 'v'
 
 " ------CtrlP--------
 nnoremap <leader>b :CtrlPBuffer<CR>
 nnoremap <leader>p :CtrlP<CR>
+
+" ---NERDCommenter---
+" Use <leader> / to toggle comments
+vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
+nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 
 " ------AirLine------
 let g:airline_powerline_fonts = 1
