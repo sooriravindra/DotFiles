@@ -1,3 +1,9 @@
+" Typos happen all the time. Using alias to fix em
+com W w
+com Q q
+com Wq wq
+com WQ wq
+
 " Set 256 colour mode
 set t_Co=256
 
@@ -46,9 +52,11 @@ vnoremap <C-p> "+gP
 hi VertSplit ctermbg=250 ctermfg=236
 set fillchars+=vert:│
 
-"" -- Let power line handle the following --
 " Show line number and percent in the command line
-" set ruler
+set ruler
+set rulerformat=\»\ \%c\ \«\ \%P\ \%L
+
+"" -- Let power line handle the following --
 " Tabs have sensible colours
 " hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
 
@@ -71,7 +79,8 @@ function ToggleStatus()
 endfunction
 
 nnoremap <leader>t :call ToggleStatus()<Enter>
-
+vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
+nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
@@ -109,8 +118,6 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" let Vundle manage Vundle, required
-
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -123,9 +130,11 @@ Plugin 'christoomey/vim-tmux-navigator'
 
 Plugin 'scrooloose/nerdtree'
 
+Plugin 'scrooloose/nerdcommenter'
+
 " Keep Plugin commands between vundle#begin/end.
 
-call vundle#end()            " required
+call vundle#end()
 filetype plugin indent on    " required
 
 " } end of Vundle stuff
@@ -145,6 +154,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
+let NERDTreeShowHidden=1
 "" In case utf-8 support is not present, use ascii chars in NerdTree
 " let g:NERDTreeDirArrowExpandable = '>'
 " let g:NERDTreeDirArrowCollapsible = 'v'
@@ -181,4 +191,3 @@ let g:airline_theme='wombat'
 "let g:airline_symbols.branch = ''
 "let g:airline_symbols.readonly = ''
 "let g:airline_symbols.linenr = ''
-
