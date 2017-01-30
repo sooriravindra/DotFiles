@@ -117,6 +117,7 @@ inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
 " --------------------------------
+" Install using: git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 "  Vundle stuff starts here {
 
 filetype off
