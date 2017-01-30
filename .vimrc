@@ -87,7 +87,7 @@ function ToggleStatus()
     endif
 endfunction
 
-nnoremap <leader>t :call ToggleStatus()<Enter>
+nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
@@ -111,10 +111,10 @@ function SmoothScroll(up)
 endfunction
 
 
-nnoremap <C-U> :call SmoothScroll(1)<Enter>
-nnoremap <C-D> :call SmoothScroll(0)<Enter>
-inoremap <C-U> <Esc>:call SmoothScroll(1)<Enter>i
-inoremap <C-D> <Esc>:call SmoothScroll(0)<Enter>i
+nnoremap <silent> <C-U> :call SmoothScroll(1)<Enter>
+nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
+inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
+inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
 " --------------------------------
 "  Vundle stuff starts here {
