@@ -116,6 +116,12 @@ nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
 inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
+if has("cscope")
+    " add any cscope database in current directory
+    if filereadable("cscope.out")
+        cs add cscope.out
+    endif
+endif
 " --------------------------------
 " Install using: git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 "  Vundle stuff starts here {
