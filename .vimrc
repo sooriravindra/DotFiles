@@ -71,6 +71,9 @@ hi CursorLine   cterm=NONE ctermbg=235
 
 " Let us use space as leader. So that we can use both L & R hand
 let mapleader=" "
+
+" Leader commands follow:
+"
 " Quick swap buffers
 nnoremap <leader><leader> <C-^>
 
@@ -91,6 +94,10 @@ function ToggleStatus()
 endfunction
 
 nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
+
+" cscope query symbol and definition
+nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
+nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
