@@ -27,6 +27,9 @@ set backspace=indent,eol,start
 " Show line numbers
 set number
 
+" Show menu when autocompleting commands
+set wildmenu
+
 " Highlight all search results and search as you type
 set hlsearch
 set incsearch
@@ -147,6 +150,8 @@ Plugin 'tpope/vim-vinegar'
 "Plugin 'scrooloose/nerdtree'
 
 Plugin 'scrooloose/nerdcommenter'
+
+Plugin 'airblade/vim-gitgutter'
 
 " Keep Plugin commands between vundle#begin/end.
 
