@@ -149,8 +149,6 @@ nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'VundleVim/Vundle.vim'
-
 Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'vim-airline/vim-airline'
