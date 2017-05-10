@@ -10,19 +10,17 @@ set t_Co=256
 " Enables utf-8 chars in Vim
 set enc=utf-8
 
-" Set terminal to Xterm to make special keys work rightEg: <Home>
+"" Set terminal to Xterm to make special keys work rightEg: <Home>
 " set term=xterm-256color
 
-" Commands for setting the solarized dark theme with syntax highlighting
+" Enable syntax highlighting
 syntax enable
+
+" Syntax highlighting to adopt to dark background
 set background=dark
+
+"" Solarized? Nah
 " colorscheme solarized
-
-" Set tab as space with 4 characters
-set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
-
-" Set backspace to work over line endings and emulate general behaviour
-set backspace=indent,eol,start
 
 " Show line numbers
 set number
@@ -30,12 +28,33 @@ set number
 " Show menu when autocompleting commands
 set wildmenu
 
+" Keep cursor in the centre of the screen
+set scrolloff=999
+
+"Make the split seperator more cleaner
+hi VertSplit ctermbg=250 ctermfg=236
+set fillchars+=vert:│
+
+" Show line number and percent in the command line
+set ruler
+set rulerformat=\»\ \%c\ \«\ \%P\ \%L
+
+" Highlight the line where the cursor is located
+set cursorline
+hi CursorLine   cterm=NONE ctermbg=235
+
+" Set tab as space with 4 characters
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+
+" Set backspace to work over line endings and emulate general behaviour
+set backspace=indent,eol,start
+
 " Highlight all search results and search as you type
 set hlsearch
 set incsearch
 
-" Keep cursor in the centre of the screen
-set scrolloff=999
+"" Ignores case during search
+" set ignorecase
 
 set autoindent
 
@@ -51,38 +70,16 @@ vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
 
-"Make the split seperator more cleaner
-hi VertSplit ctermbg=250 ctermfg=236
-set fillchars+=vert:│
-
-" Show line number and percent in the command line
-set ruler
-set rulerformat=\»\ \%c\ \«\ \%P\ \%L
-
-set cursorline
-hi CursorLine   cterm=NONE ctermbg=235
-
 "" -- Let power line handle the following --
 " Tabs have sensible colours
 " hi TabLine ctermfg=Black ctermbg=LightGrey cterm=NONE
 
-"" Ignores case during search
-" set ignorecase
 
-" Let us use space as leader. So that we can use both L & R hand
-let mapleader=" "
+" ====================================================================
+"                   Custom functions here:
+" ====================================================================
 
-" Leader commands follow:
-"
-" Quick swap buffers
-nnoremap <leader><leader> <C-^>
-
-" Navigate buffers
-nnoremap <leader>k :bp<CR>
-nnoremap <leader>j :bn <CR>
-
-" Toggle status bar at <leader-t>
-let g:ToggleStatusShow = 0
+" Toggle the status bar 
 function ToggleStatus()
     if g:ToggleStatusShow == 0
         set laststatus=2
@@ -92,12 +89,6 @@ function ToggleStatus()
         let g:ToggleStatusShow = 0
     endif
 endfunction
-
-nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
-
-" cscope query symbol and definition
-nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
-nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
@@ -120,72 +111,67 @@ function SmoothScroll(up)
     endwhile
 endfunction
 
-
 nnoremap <silent> <C-U> :call SmoothScroll(1)<Enter>
 nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
 inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
-if has("cscope")
-    " add any cscope database in current directory
-    if filereadable("cscope.out")
-        cs add cscope.out
-    endif
-endif
-" --------------------------------
-" Install using: git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-"  Vundle stuff starts here {
+" ====================================================================
+"                    Leader commands follow:
+" ====================================================================
 
-filetype off
+" Let us use space as leader. So that we can use both L & R hand
+let mapleader=" "
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Quick swap buffers
+nnoremap <leader><leader> <C-^>
 
-Plugin 'VundleVim/Vundle.vim'
+" Navigate buffers
+nnoremap <leader>k :bp<CR>
+nnoremap <leader>j :bn <CR>
 
-Plugin 'ctrlpvim/ctrlp.vim'
+" Toggle status bar at <leader-t>
+nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
+" by default don't show
+let g:ToggleStatusShow = 0
 
-Plugin 'vim-airline/vim-airline'
+" cscope query symbol and definition
+nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
+nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
-Plugin 'vim-airline/vim-airline-themes'
+" ====================================================================
+" =======================================================================
+"                      Vim Plug stuff here, adds plugins
+" =======================================================================
 
-Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'tpope/vim-vinegar'
+call plug#begin('~/.vim/plugged')
 
-"Plugin 'scrooloose/nerdtree'
+Plug 'VundleVim/Vundle.vim'
 
-Plugin 'scrooloose/nerdcommenter'
+Plug 'ctrlpvim/ctrlp.vim'
 
-Plugin 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
 
-" Keep Plugin commands between vundle#begin/end.
+Plug 'vim-airline/vim-airline-themes'
 
-call vundle#end()
-filetype plugin indent on    " required
+Plug 'christoomey/vim-tmux-navigator'
 
-" } end of Vundle stuff
+Plug 'tpope/vim-vinegar'
+
+"Plug 'scrooloose/nerdtree'
+
+Plug 'scrooloose/nerdcommenter'
+
+Plug 'airblade/vim-gitgutter'
+
+call plug#end()
 
 "
-"  -------- Configure plugins hence forth ---------------
-"
+"  ===========================================================================
+"                         Configure plugins hence forth
+"  ===========================================================================
 
-
-"" -----NERDTree----
-"map <C-o> :NERDTreeToggle<CR>
-
-"" Quit vim if NERDTree is the only open window
-""autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-"" If no file is specified open nerd tree
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
-"let NERDTreeShowHidden=1
-""" In case utf-8 support is not present, use ascii chars in NerdTree
-"" let g:NERDTreeDirArrowExpandable = '>'
-"" let g:NERDTreeDirArrowCollapsible = 'v'
 
 " ------CtrlP--------
 nnoremap <leader>b :CtrlPBuffer<CR>
@@ -199,6 +185,8 @@ nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 " ------AirLine------
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
+
+" Less flashy colours
 let g:airline_theme='wombat'
 
 "" Enable the following unicode if the font is unavailable on the terminal
