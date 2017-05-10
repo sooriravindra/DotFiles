@@ -139,11 +139,13 @@ let g:ToggleStatusShow = 0
 nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
 nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
-" ====================================================================
 " =======================================================================
 "                      Vim Plug stuff here, adds plugins
 " =======================================================================
 
+" Run the following to install Plug:
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+" https://raw.github.com/junegunn/vim-plug/master/plug.vim
 
 call plug#begin('~/.vim/plugged')
 
