@@ -19,8 +19,8 @@ syntax enable
 " Syntax highlighting to adopt to dark background
 set background=dark
 
-"" Solarized? Nah
-" colorscheme solarized
+"" Colorscheme: Solarized? Nah
+colorscheme gruvbox
 
 " Show line numbers
 set number
@@ -64,11 +64,17 @@ set hidden
 " Press f2 to go to paste mode, where auto indenting will be turned off
 set pastetoggle=<F2>
 
+" Make grep sane
+set grepprg=ag 
+
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
 vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
+
+" cscope, export CSCOPE_DB when you need supoort
+cs add $CSCOPE_DB
 
 "" -- Let power line handle the following --
 " Tabs have sensible colours
@@ -90,6 +96,10 @@ function ToggleStatus()
     endif
 endfunction
 
+" Add a sensible Grep command. silent removes shell output, redraw needed to
+" fix display after suppressing output. grep uses grepprg which was set (ag)
+command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
+
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
 
@@ -105,7 +115,7 @@ function SmoothScroll(up)
     let scrollsize=15
     while counter<scrollsize
         let counter+=1
-        sleep 10m
+        sleep 3m
         redraw
         exec "normal " . scrollaction
     endwhile
@@ -139,6 +149,11 @@ let g:ToggleStatusShow = 0
 nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
 nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
+" mapping for grep
+nnoremap <leader>f :Grep 
+
+" lets make faster
+nnoremap <leader>m :make <CR>
 " =======================================================================
 "                      Vim Plug stuff here, adds plugins
 " =======================================================================
@@ -177,6 +192,8 @@ call plug#end()
 nnoremap <leader>b :CtrlPBuffer<CR>
 nnoremap <leader>p :CtrlP<CR>
 
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
 " ---NERDCommenter---
 " Use <leader> / to toggle comments
 vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
@@ -212,3 +229,5 @@ let g:airline_theme='wombat'
 "let g:airline_symbols.branch = ''
 "let g:airline_symbols.readonly = ''
 "let g:airline_symbols.linenr = ''
+
+
