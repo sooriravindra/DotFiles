@@ -73,8 +73,6 @@ vnoremap <C-y> "+y
 nnoremap <C-p> "+gP
 vnoremap <C-p> "+gP
 
-" cscope, export CSCOPE_DB when you need supoort
-cs add $CSCOPE_DB
 
 "" -- Let power line handle the following --
 " Tabs have sensible colours
@@ -84,6 +82,31 @@ cs add $CSCOPE_DB
 " ====================================================================
 "                   Custom functions here:
 " ====================================================================
+
+" Add a sensible Grep command. silent removes shell output, redraw needed to
+" fix display after suppressing output. grep uses grepprg which was set (ag)
+command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
+
+" Need a silent make
+command Smake silent make | redraw!
+
+
+" Let's write a local init function that gets called each time vim is opened
+" We'll look at current directory look for a file called vimrc in the directory 
+" and source it, add cscope file if found. A nice trick is to set project
+" specific stuff like makeprg set in vimrc and commit it to a repo.
+function VimLocalInit()
+    let l:welcome_msg=""
+    if filereadable("vimrc")
+               let l:welcome_msg.="Sourcing local vimrc. "
+               source vimrc
+    endif
+    if filereadable("cscope.out")
+               let l:welcome_msg.="Adding cscope.out. "
+               cs add cscope.out
+    endif
+    echom l:welcome_msg
+endfunction
 
 " Toggle the status bar 
 function ToggleStatus()
@@ -95,10 +118,6 @@ function ToggleStatus()
         let g:ToggleStatusShow = 0
     endif
 endfunction
-
-" Add a sensible Grep command. silent removes shell output, redraw needed to
-" fix display after suppressing output. grep uses grepprg which was set (ag)
-command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Following function and mapping allow smooth scrolling using ^d and ^u
 " Helps preserve visual context. Inspired by http://goo.gl/7RUfA8
@@ -153,7 +172,13 @@ nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 nnoremap <leader>f :Grep 
 
 " lets make faster
-nnoremap <leader>m :make <CR>
+nnoremap <leader>m :Smake <CR>
+" =======================================================================
+"                      Autocommands here:
+" =======================================================================
+
+autocmd VimEnter * :call VimLocalInit()
+
 " =======================================================================
 "                      Vim Plug stuff here, adds plugins
 " =======================================================================
