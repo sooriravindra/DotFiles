@@ -32,16 +32,16 @@ set wildmenu
 set scrolloff=999
 
 "Make the split seperator more cleaner
-hi VertSplit ctermbg=250 ctermfg=236
+"hi VertSplit ctermbg=236 ctermfg=246
 set fillchars+=vert:│
 
 " Show line number and percent in the command line
 set ruler
-set rulerformat=\»\ \%c\ \«\ \%P\ \%L
+set rulerformat=\ »\ \%c\ «\ %P\ %L
 
 " Highlight the line where the cursor is located
 set cursorline
-hi CursorLine   cterm=NONE ctermbg=235
+"hi CursorLine   cterm=NONE ctermbg=236
 
 " Set tab as space with 4 characters
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
@@ -108,6 +108,7 @@ function VimLocalInit()
     echom l:welcome_msg
 endfunction
 
+let g:ToggleStatusShow = 1
 " Toggle the status bar 
 function ToggleStatus()
     if g:ToggleStatusShow == 0
@@ -134,7 +135,7 @@ function SmoothScroll(up)
     let scrollsize=15
     while counter<scrollsize
         let counter+=1
-        sleep 3m
+        sleep 1m
         redraw
         exec "normal " . scrollaction
     endwhile
@@ -159,10 +160,8 @@ nnoremap <leader><leader> <C-^>
 nnoremap <leader>k :bp<CR>
 nnoremap <leader>j :bn <CR>
 
-" Toggle status bar at <leader-t>
-nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
-" by default don't show
-let g:ToggleStatusShow = 0
+" Close all other windows
+nnoremap <leader>l :only <CR>
 
 " cscope query symbol and definition
 nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
@@ -173,6 +172,10 @@ nnoremap <leader>f :Grep
 
 " lets make faster
 nnoremap <leader>m :Smake <CR>
+
+" Toggle status bar at <leader-t>
+nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
+
 " =======================================================================
 "                      Autocommands here:
 " =======================================================================
@@ -189,17 +192,20 @@ autocmd VimEnter * :call VimLocalInit()
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'ctrlpvim/ctrlp.vim'
+" Plugins I used, but no longer use:
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+"Plug 'scrooloose/nerdtree'
+"Plug 'ctrlpvim/ctrlp.vim'
 
-Plug 'vim-airline/vim-airline'
-
-Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'tpope/vim-vinegar'
 
-"Plug 'scrooloose/nerdtree'
+Plug 'Yggdroot/indentLine'
 
 Plug 'scrooloose/nerdcommenter'
 
@@ -213,23 +219,32 @@ call plug#end()
 "  ===========================================================================
 
 
-" ------CtrlP--------
-nnoremap <leader>b :CtrlPBuffer<CR>
-nnoremap <leader>p :CtrlP<CR>
-
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-
 " ---NERDCommenter---
 " Use <leader> / to toggle comments
 vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 
-" ------AirLine------
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
+" ------CtrlP--------
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>p :FZF<CR>
+nnoremap <leader>o :CtrlPMixed<CR>
 
-" Less flashy colours
-let g:airline_theme='wombat'
+" ------CtrlP--------
+"nnoremap <leader>b :CtrlPBuffer<CR>
+"nnoremap <leader>p :CtrlP<CR>
+"nnoremap <leader>o :CtrlPMixed<CR>
+"
+"let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+
+"" ------AirLine------
+"let g:airline_powerline_fonts = 1
+"let g:airline#extensions#tabline#enabled = 1
+"
+"" Less flashy colours
+"let g:airline_theme='wombat'
+"set laststatus=0
+
 
 "" Enable the following unicode if the font is unavailable on the terminal
 "" unicode symbols
@@ -254,5 +269,4 @@ let g:airline_theme='wombat'
 "let g:airline_symbols.branch = ''
 "let g:airline_symbols.readonly = ''
 "let g:airline_symbols.linenr = ''
-
 
