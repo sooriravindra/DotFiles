@@ -108,6 +108,11 @@ function VimLocalInit()
     echom l:welcome_msg
 endfunction
 
+function ReloadCscope()
+    !cscope -qRb
+    cs reset 1
+endfunction
+
 let g:ToggleStatusShow = 1
 " Toggle the status bar 
 function ToggleStatus()
@@ -176,6 +181,9 @@ nnoremap <leader>m :Smake <CR>
 " Toggle status bar at <leader-t>
 nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
 
+" Reload cscope
+nnoremap <silent> <leader>r :call ReloadCscope()<Enter><Enter>
+
 " =======================================================================
 "                      Autocommands here:
 " =======================================================================
@@ -193,8 +201,8 @@ autocmd VimEnter * :call VimLocalInit()
 call plug#begin('~/.vim/plugged')
 
 " Plugins I used, but no longer use:
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 "Plug 'scrooloose/nerdtree'
 "Plug 'ctrlpvim/ctrlp.vim'
 
@@ -202,6 +210,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 Plug 'christoomey/vim-tmux-navigator'
+
+Plug 'lervag/vimtex'
 
 Plug 'tpope/vim-vinegar'
 
@@ -237,13 +247,16 @@ nnoremap <leader>o :CtrlPMixed<CR>
 "let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 
+"" ------VimTex------
+let g:vimtex_compiler_latexmk = {'callback' : 0}
+
 "" ------AirLine------
-"let g:airline_powerline_fonts = 1
-"let g:airline#extensions#tabline#enabled = 1
-"
-"" Less flashy colours
-"let g:airline_theme='wombat'
-"set laststatus=0
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+
+" Less flashy colours
+let g:airline_theme='wombat'
+set laststatus=0
 
 
 "" Enable the following unicode if the font is unavailable on the terminal
