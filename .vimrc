@@ -175,6 +175,9 @@ nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 " mapping for grep
 nnoremap <leader>f :Grep 
 
+" mapping Gundo
+nnoremap <leader>u :GundoToggle <Enter>
+
 " lets make faster
 nnoremap <leader>m :Smake <CR>
 
@@ -221,6 +224,8 @@ Plug 'scrooloose/nerdcommenter'
 
 Plug 'airblade/vim-gitgutter'
 
+Plug 'sjl/gundo.vim'
+
 call plug#end()
 
 "
@@ -257,6 +262,9 @@ let g:airline#extensions#tabline#enabled = 1
 " Less flashy colours
 let g:airline_theme='wombat'
 set laststatus=0
+
+"" -------Gundo-------
+let g:gundo_prefer_python3 = 1
 
 
 "" Enable the following unicode if the font is unavailable on the terminal
