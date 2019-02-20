@@ -33,7 +33,7 @@ set scrolloff=999
 
 "Make the split seperator more cleaner
 "hi VertSplit ctermbg=236 ctermfg=246
-set fillchars+=vert:│
+" set fillchars+=vert:|
 
 " Show line number and percent in the command line
 set ruler
@@ -41,7 +41,7 @@ set rulerformat=\ »\ \%c\ «\ %P\ %L
 
 " Highlight the line where the cursor is located
 set cursorline
-"hi CursorLine   cterm=NONE ctermbg=236
+hi CursorLine   cterm=NONE ctermbg=236
 
 " Set tab as space with 4 characters
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
@@ -204,11 +204,10 @@ autocmd VimEnter * :call VimLocalInit()
 call plug#begin('~/.vim/plugged')
 
 " Plugins I used, but no longer use:
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 "Plug 'scrooloose/nerdtree'
 "Plug 'ctrlpvim/ctrlp.vim'
 
+Plug 'ap/vim-buftabline'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
@@ -218,13 +217,13 @@ Plug 'lervag/vimtex'
 
 Plug 'tpope/vim-vinegar'
 
-Plug 'Yggdroot/indentLine'
-
 Plug 'scrooloose/nerdcommenter'
 
 Plug 'airblade/vim-gitgutter'
 
 Plug 'sjl/gundo.vim'
+
+Plug 'nachumk/systemverilog.vim'
 
 call plug#end()
 
@@ -255,39 +254,13 @@ nnoremap <leader>o :CtrlPMixed<CR>
 "" ------VimTex------
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 
-"" ------AirLine------
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
 
 " Less flashy colours
-let g:airline_theme='wombat'
 set laststatus=0
 
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
 
-
+let g:buftabline_indicators = 1
 "" Enable the following unicode if the font is unavailable on the terminal
 "" unicode symbols
-"let g:airline_left_sep = '»'
-"let g:airline_left_sep = '▶'
-"let g:airline_right_sep = '«'
-"let g:airline_right_sep = '◀'
-"let g:airline_symbols.linenr = '␊'
-"let g:airline_symbols.linenr = '␤'
-"let g:airline_symbols.linenr = '¶'
-"let g:airline_symbols.branch = '⎇'
-"let g:airline_symbols.paste = 'ρ'
-"let g:airline_symbols.paste = 'Þ'
-"let g:airline_symbols.paste = '∥'
-"let g:airline_symbols.whitespace = 'Ξ'
-"
-"" airline symbols
-"let g:airline_left_sep = ''
-"let g:airline_left_alt_sep = ''
-"let g:airline_right_sep = ''
-"let g:airline_right_alt_sep = ''
-"let g:airline_symbols.branch = ''
-"let g:airline_symbols.readonly = ''
-"let g:airline_symbols.linenr = ''
-
