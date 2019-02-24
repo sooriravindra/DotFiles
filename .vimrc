@@ -206,9 +206,13 @@ call plug#begin('~/.vim/plugged')
 " Plugins I used, but no longer use:
 "Plug 'scrooloose/nerdtree'
 "Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 
 Plug 'ap/vim-buftabline'
+
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
 Plug 'junegunn/fzf.vim'
 
 Plug 'christoomey/vim-tmux-navigator'
@@ -238,10 +242,9 @@ call plug#end()
 vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
 
-" ------CtrlP--------
+" ------FZF--------
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>p :FZF<CR>
-nnoremap <leader>o :CtrlPMixed<CR>
 
 " ------CtrlP--------
 "nnoremap <leader>b :CtrlPBuffer<CR>
@@ -262,5 +265,3 @@ set laststatus=0
 let g:gundo_prefer_python3 = 1
 
 let g:buftabline_indicators = 1
-"" Enable the following unicode if the font is unavailable on the terminal
-"" unicode symbols
