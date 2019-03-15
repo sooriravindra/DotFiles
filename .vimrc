@@ -20,6 +20,8 @@ syntax enable
 set background=dark
 
 "" Colorscheme: Solarized? Nah
+" curl -fLo ~/.vim/colors/gruvbox.vim --create-dirs 
+" https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim
 colorscheme gruvbox
 
 " Show line numbers
