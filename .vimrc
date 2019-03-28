@@ -22,7 +22,7 @@ set background=dark
 "" Colorscheme: Solarized? Nah
 " curl -fLo ~/.vim/colors/gruvbox.vim --create-dirs 
 " https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim
-colorscheme gruvbox
+" colorscheme gruvbox
 
 " Show line numbers
 set number
@@ -66,8 +66,13 @@ set hidden
 " Press f2 to go to paste mode, where auto indenting will be turned off
 set pastetoggle=<F2>
 
-" Make grep sane
-set grepprg=ag 
+" Make grep sane. Use recursive by default. Use ag if available
+" https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+    set grepprg=ag 
+else
+    set grepprg=grep\ -rn
+endif
 
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
@@ -86,7 +91,7 @@ vnoremap <C-p> "+gP
 " ====================================================================
 
 " Add a sensible Grep command. silent removes shell output, redraw needed to
-" fix display after suppressing output. grep uses grepprg which was set (ag)
+" fix display after suppressing output. grep uses grepprg which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Need a silent make
