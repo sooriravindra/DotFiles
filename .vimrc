@@ -245,6 +245,8 @@ Plug 'lervag/vimtex'
 
 Plug 'tpope/vim-vinegar'
 
+Plug 'tpope/vim-fugitive'
+
 Plug 'scrooloose/nerdcommenter'
 
 Plug 'airblade/vim-gitgutter'
