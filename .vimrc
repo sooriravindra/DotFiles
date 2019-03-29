@@ -161,6 +161,23 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 " ====================================================================
 "                    Leader commands follow:
 " ====================================================================
+"
+" List all the commands here. Lest you forget.
+"
+" leader + leader = Swap 
+" leader + k      = Prev buffer
+" leader + j      = Next buffer
+" leader + l      = Close all other windows
+" leader + s      = Jump to cscope symbol
+" leader + g      = Jump to cscope definition
+" leader + f      = Run grepprg (Grep command)
+" leader + u      = Gundo toggle
+" leader + m      = Run makeprg (Smake command)
+" leader + t      = Status bar toggle
+" leader + r      = Reload cscope database
+" leader + /      = Comment the line/block (nerdcommenter)
+" leader + p      = Fuzzy search files
+" leader + b      = Fuzzy search buffers
 
 " Let us use space as leader. So that we can use both L & R hand
 let mapleader=" "
@@ -188,7 +205,7 @@ nnoremap <leader>u :GundoToggle <Enter>
 " lets make faster
 nnoremap <leader>m :Smake <CR>
 
-" Toggle status bar at <leader-t>
+" Toggle status bar
 nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
 
 " Reload cscope
