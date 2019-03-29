@@ -153,6 +153,14 @@ function SmoothScroll(up)
     endwhile
 endfunction
 
+function GStatusToggle()
+    if buflisted(bufname('.git/index'))
+        bd .git/index
+    else
+        Gstatus
+    endif
+endfunction
+
 nnoremap <silent> <C-U> :call SmoothScroll(1)<Enter>
 nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
 inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
@@ -164,20 +172,21 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 "
 " List all the commands here. Lest you forget.
 "
-" leader + leader = Swap 
-" leader + k      = Prev buffer
-" leader + j      = Next buffer
-" leader + l      = Close all other windows
-" leader + s      = Jump to cscope symbol
-" leader + g      = Jump to cscope definition
-" leader + f      = Run grepprg (Grep command)
-" leader + u      = Gundo toggle
-" leader + m      = Run makeprg (Smake command)
-" leader + t      = Status bar toggle
-" leader + r      = Reload cscope database
+" leader + leader = Go to last buffer
 " leader + /      = Comment the line/block (nerdcommenter)
-" leader + p      = Fuzzy search files
 " leader + b      = Fuzzy search buffers
+" leader + f      = Run grepprg (Grep command)
+" leader + g      = Jump to cscope definition
+" leader + j      = Next buffer
+" leader + k      = Prev buffer
+" leader + l      = Close all other windows
+" leader + m      = Run makeprg (Smake command)
+" leader + p      = Fuzzy search files
+" leader + r      = Reload cscope database
+" leader + s      = Jump to cscope symbol
+" leader + t      = Status bar toggle
+" leader + u      = Gundo toggle
+" leader + v      = Gstatus toggle (fugitive)
 
 " Let us use space as leader. So that we can use both L & R hand
 let mapleader=" "
@@ -207,6 +216,9 @@ nnoremap <leader>m :Smake <CR>
 
 " Toggle status bar
 nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
+
+" Toggle Gstatus
+nnoremap <silent> <leader>v :call GStatusToggle()<Enter>
 
 " Reload cscope
 nnoremap <silent> <leader>r :call ReloadCscope()<Enter><Enter>
