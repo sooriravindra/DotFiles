@@ -24,14 +24,15 @@ set background=dark
 " https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim
 " colorscheme gruvbox
 
-" Show line numbers
+" Show line numbers and make them relative
 set number
+set relativenumber
 
 " Show menu when autocompleting commands
 set wildmenu
 
 " Keep cursor in the centre of the screen
-set scrolloff=999
+" set scrolloff=999
 
 "Make the split seperator more cleaner
 "hi VertSplit ctermbg=236 ctermfg=246
