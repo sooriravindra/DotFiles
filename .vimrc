@@ -188,6 +188,7 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 " leader + t      = Status bar toggle
 " leader + u      = Gundo toggle
 " leader + v      = Gstatus toggle (fugitive)
+" leader + x      = Delete buffer
 
 " Let us use space as leader. So that we can use both L & R hand
 let mapleader=" "
@@ -198,6 +199,9 @@ nnoremap <leader><leader> <C-^>
 " Navigate buffers
 nnoremap <leader>k :bp<CR>
 nnoremap <leader>j :bn <CR>
+
+" Close current buffer
+nnoremap <leader>x :bd <CR>
 
 " Close all other windows
 nnoremap <leader>l :only <CR>
