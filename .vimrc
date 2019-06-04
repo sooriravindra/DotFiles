@@ -252,6 +252,8 @@ call plug#begin('~/.vim/plugged')
 "Plug 'lervag/vimtex' 
 " Instead : latexmk -pdf -pvc -interaction=nonstopmode <sample.tex>
 
+Plug 'tommcdo/vim-lion'
+
 Plug 'ap/vim-buftabline'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
