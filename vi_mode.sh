@@ -8,4 +8,4 @@ bind -m vi-insert "\C-k":kill-line
 bind -m vi-insert "\C-y":yank
 bind -m vi-insert "\C-p":previous-history
 bind -m vi-insert "\C-n":next-history
-bind -m vi-insert "\e.":yank-last-arg
+bind -m vi-insert '"\e.":yank-last-arg'
