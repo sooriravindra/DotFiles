@@ -1,5 +1,6 @@
 # Set vi mode in bash and get some goodies from emacs. Evil Bash
 set -o vi
+bind 'set show-mode-in-prompt on'
 bind -m vi-insert "\C-l":clear-screen
 bind -m vi-insert "\C-a":beginning-of-line
 bind -m vi-insert "\C-e":end-of-line
