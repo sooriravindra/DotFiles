@@ -18,7 +18,6 @@ done
 
 confirm_action "Add vi_mode to bashrc?" "echo 'source ~/.vi_mode.sh' >> ~/.bashrc"
 confirm_action "Install Plug for Vim?" "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim"
-confirm_action "Install gruvbox color scheme for Vim?" "curl -fLo ~/.vim/colors/gruvbox.vim --create-dirs https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim" 
 confirm_action "Install Vim plugins now?" "vim +PlugInstall +qall"
 echo ""
 echo ""
@@ -28,5 +27,4 @@ echo "========================================="
 echo ""
 
 # TODO
-# Put Gruvbox into Plug
 # Add aliases.sh

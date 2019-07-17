@@ -20,9 +20,6 @@ syntax enable
 set background=dark
 
 "" Colorscheme: Solarized? Nah
-" curl -fLo ~/.vim/colors/gruvbox.vim --create-dirs 
-" https://raw.githubusercontent.com/morhetz/gruvbox/master/colors/gruvbox.vim
-" colorscheme gruvbox
 
 " Show line numbers and make them relative
 set number
@@ -121,14 +118,15 @@ function ReloadCscope()
     cs reset 1
 endfunction
 
-let g:ToggleStatusShow = 1
+set laststatus=0
+let g:ToggleStatusShow = 0
 " Toggle the status bar 
 function ToggleStatus()
     if g:ToggleStatusShow == 0
         set laststatus=2
         let g:ToggleStatusShow = 1
     else
-        set laststatus=1
+        set laststatus=0
         let g:ToggleStatusShow = 0
     endif
 endfunction
@@ -252,6 +250,8 @@ call plug#begin('~/.vim/plugged')
 "Plug 'lervag/vimtex' 
 " Instead : latexmk -pdf -pvc -interaction=nonstopmode <sample.tex>
 
+Plug 'morhetz/gruvbox'
+
 Plug 'tommcdo/vim-lion'
 
 Plug 'ap/vim-buftabline'
@@ -304,11 +304,11 @@ nnoremap <leader>p :FZF<CR>
 "" ------VimTex------
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 
-
-" Less flashy colours
-set laststatus=0
-
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
 
+" ------gruvbox-------
+colorscheme gruvbox
+
+" -----Buftabline-----
 let g:buftabline_indicators = 1
