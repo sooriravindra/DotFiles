@@ -288,8 +288,6 @@ call plug#begin('~/.vim/plugged')
 " Plug 'scrooloose/nerdcommenter'
 " Replaced by commentary
 
-Plug 'morhetz/gruvbox'
-
 Plug 'tommcdo/vim-lion'
 
 Plug 'ap/vim-buftabline'
@@ -300,6 +298,16 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'christoomey/vim-tmux-navigator'
 
+Plug 'airblade/vim-gitgutter'
+
+Plug 'sjl/gundo.vim'
+
+Plug 'nachumk/systemverilog.vim'
+
+Plug 'mattn/emmet-vim'
+
+Plug 'machakann/vim-sandwich'
+
 " God bless Tim Pope
 
 Plug 'tpope/vim-vinegar'
@@ -308,13 +316,11 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'tpope/vim-commentary'
 
-Plug 'airblade/vim-gitgutter'
+" Colorschemes
 
-Plug 'sjl/gundo.vim'
+Plug 'sickill/vim-monokai'
 
-Plug 'nachumk/systemverilog.vim'
-
-Plug 'mattn/emmet-vim'
+Plug 'morhetz/gruvbox'
 
 call plug#end()
 
