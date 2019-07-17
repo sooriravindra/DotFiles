@@ -13,6 +13,12 @@ set enc=utf-8
 " Enable syntax highlighting
 syntax enable
 
+" Enable ftplugins and indent scripts
+filetype plugin indent on
+
+" Allow % to jump between if and else
+runtime macros/matchit.vim
+
 " Syntax highlighting to adopt to dark background
 set background=dark
 
@@ -26,7 +32,7 @@ set relativenumber
 set wildmenu
 
 " Keep cursor in the centre of the screen
-" set scrolloff=999
+set scrolloff=999
 
 " Make the split seperator more cleaner
 " hi VertSplit ctermbg=236 ctermfg=246
@@ -53,6 +59,7 @@ set incsearch
 "" Ignores case during search
 " set ignorecase
 
+" New lines begin with indentation
 set autoindent
 
 " Buffers are now hidden, instead of asking each time
@@ -62,7 +69,7 @@ set hidden
 set pastetoggle=<F2>
 
 " Make grep sane. Use recursive by default. Use ag if available
-" https://github.com/ggreer/the_silver_searcher
+" See https://github.com/ggreer/the_silver_searcher
 if executable('ag')
     set grepprg=ag 
 else
@@ -154,9 +161,21 @@ function SmoothScroll(up)
     endwhile
 endfunction
 
+" Toggle centre cursor
+
+function ToggleCursor()
+    if &scrolloff==999
+        set scrolloff=0
+        echom "Centre cursor disabled"
+    else
+        set scrolloff=999
+        echom "Centre cursor enabled"
+    endif
+endfunction
+
 " Toggle fugitive git status
 
-function GStatusToggle()
+function ToggleGstatus()
     if buflisted(bufname('.git/index'))
         bd .git/index
     else
@@ -179,6 +198,7 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 " leader + leader = Go to last buffer
 " leader + /      = Comment the line/block (commentary)
 " leader + b      = Fuzzy search buffers
+" leader + c      = Centre cursor toggle
 " leader + f      = Run grepprg (Grep command)
 " leader + g      = Jump to cscope definition
 " leader + j      = Next buffer
@@ -222,11 +242,14 @@ nnoremap <leader>u :GundoToggle <Enter>
 " lets make faster
 nnoremap <leader>m :Smake <CR>
 
+" Toggle center cursor
+nnoremap <silent> <leader>c :call ToggleCursor()<Enter>
+
 " Toggle status bar
 nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
 
 " Toggle Gstatus
-nnoremap <silent> <leader>v :call GStatusToggle()<Enter>
+nnoremap <silent> <leader>v :call ToggleGstatus()<Enter>
 
 " Reload cscope
 nnoremap <silent> <leader>r :call ReloadCscope()<Enter><Enter>
