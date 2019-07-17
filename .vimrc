@@ -10,16 +10,13 @@ set t_Co=256
 " Enables utf-8 chars in Vim
 set enc=utf-8
 
-"" Set terminal to Xterm to make special keys work rightEg: <Home>
-" set term=xterm-256color
-
 " Enable syntax highlighting
 syntax enable
 
 " Syntax highlighting to adopt to dark background
 set background=dark
 
-"" Colorscheme: Solarized? Nah
+" colorscheme solarized? Nah. We'll set gruvbox later
 
 " Show line numbers and make them relative
 set number
@@ -31,8 +28,8 @@ set wildmenu
 " Keep cursor in the centre of the screen
 " set scrolloff=999
 
-"Make the split seperator more cleaner
-"hi VertSplit ctermbg=236 ctermfg=246
+" Make the split seperator more cleaner
+" hi VertSplit ctermbg=236 ctermfg=246
 " set fillchars+=vert:|
 
 " Show line number and percent in the command line
@@ -85,21 +82,24 @@ vnoremap <C-p> "+gP
 
 
 " ====================================================================
-"                   Custom functions here:
+"                   Custom functions go here:
 " ====================================================================
 
-" Add a sensible Grep command. silent removes shell output, redraw needed to
-" fix display after suppressing output. grep uses grepprg which was set
+" Add a sensible Grep command. silent removes shell output, redraw 
+" needed to fix display after suppressing output. grep uses grepprg 
+" which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Need a silent make
 command Smake silent make | redraw!
 
 
-" Let's write a local init function that gets called each time vim is opened
-" We'll look at current directory look for a file called vimrc in the directory 
-" and source it, add cscope file if found. A nice trick is to set project
-" specific stuff like makeprg set in vimrc and commit it to a repo.
+" Let's write a local init function that gets called each time vim 
+" is opened. We'll look at current directory look for a file called 
+" vimrc in the directory and source it, add cscope file if found. A 
+" nice trick is to set project specific stuff like makeprg set in 
+" vimrc and commit it to a repo.
+
 function VimLocalInit()
     let l:welcome_msg=""
     if filereadable("vimrc")
@@ -118,9 +118,11 @@ function ReloadCscope()
     cs reset 1
 endfunction
 
+" Toggle the status bar, disabled by default
+
 set laststatus=0
 let g:ToggleStatusShow = 0
-" Toggle the status bar 
+
 function ToggleStatus()
     if g:ToggleStatusShow == 0
         set laststatus=2
@@ -152,6 +154,8 @@ function SmoothScroll(up)
     endwhile
 endfunction
 
+" Toggle fugitive git status
+
 function GStatusToggle()
     if buflisted(bufname('.git/index'))
         bd .git/index
@@ -162,6 +166,7 @@ endfunction
 
 nnoremap <silent> <C-U> :call SmoothScroll(1)<Enter>
 nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
+
 inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 
@@ -172,7 +177,7 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 " List all the commands here. Lest you forget.
 "
 " leader + leader = Go to last buffer
-" leader + /      = Comment the line/block (nerdcommenter)
+" leader + /      = Comment the line/block (commentary)
 " leader + b      = Fuzzy search buffers
 " leader + f      = Run grepprg (Grep command)
 " leader + g      = Jump to cscope definition
@@ -242,13 +247,23 @@ autocmd VimEnter * :call VimLocalInit()
 
 call plug#begin('~/.vim/plugged')
 
-" Plugins I used, but no longer use:
-"Plug 'scrooloose/nerdtree'
-"Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
-"Plug 'lervag/vimtex' 
+" A bit of history. Plugins I used, but no longer do:
+"
+" Plug 'scrooloose/nerdtree'
+" Replaced by vinegar
+"
+" Plug 'ctrlpvim/ctrlp.vim'
+" Replaced by FZF
+"
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+" Buftabline provides the buffer line which is the only reason I used Airline
+" 
+" Plug 'lervag/vimtex' 
 " Instead : latexmk -pdf -pvc -interaction=nonstopmode <sample.tex>
+"
+" Plug 'scrooloose/nerdcommenter'
+" Replaced by commentary
 
 Plug 'morhetz/gruvbox'
 
@@ -262,11 +277,13 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'christoomey/vim-tmux-navigator'
 
+" God bless Tim Pope
+
 Plug 'tpope/vim-vinegar'
 
 Plug 'tpope/vim-fugitive'
 
-Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-commentary'
 
 Plug 'airblade/vim-gitgutter'
 
@@ -279,30 +296,18 @@ Plug 'mattn/emmet-vim'
 call plug#end()
 
 "
-"  ===========================================================================
-"                         Configure plugins hence forth
-"  ===========================================================================
+"  ===================================================================
+"                        Plug configs go here
+"  ===================================================================
 
 
-" ---NERDCommenter---
-" Use <leader> / to toggle comments
-vnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
-nnoremap <leader>/ :call NERDComment(0,"toggle")<CR>
+" ----commentary----
+vnoremap <leader>/ :Commentary<CR>
+nnoremap <leader>/ :Commentary<CR>
 
-" ------FZF--------
+" -------FZF--------
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>p :FZF<CR>
-
-" ------CtrlP--------
-"nnoremap <leader>b :CtrlPBuffer<CR>
-"nnoremap <leader>p :CtrlP<CR>
-"nnoremap <leader>o :CtrlPMixed<CR>
-"
-"let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-
-
-"" ------VimTex------
-let g:vimtex_compiler_latexmk = {'callback' : 0}
 
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
