@@ -287,6 +287,9 @@ call plug#begin('~/.vim/plugged')
 "
 " Plug 'scrooloose/nerdcommenter'
 " Replaced by commentary
+"
+" Plug 'tpope/vim-vinegar'
+" Replaced by adding some netrw configs
 
 Plug 'tommcdo/vim-lion'
 
@@ -309,8 +312,6 @@ Plug 'mattn/emmet-vim'
 Plug 'machakann/vim-sandwich'
 
 " God bless Tim Pope
-
-Plug 'tpope/vim-vinegar'
 
 Plug 'tpope/vim-fugitive'
 
@@ -342,7 +343,11 @@ nnoremap <leader>p :FZF<CR>
 let g:gundo_prefer_python3 = 1
 
 " ------gruvbox-------
-colorscheme gruvbox
+" colorscheme gruvbox
 
 " -----Buftabline-----
 let g:buftabline_indicators = 1
+
+" -----netrw----------
+let g:netrw_banner = 0
+nnoremap - :e shodisu_ \| Explore \| bw! shodisu_<CR>
