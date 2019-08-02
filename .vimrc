@@ -76,6 +76,9 @@ else
     set grepprg=grep\ -rn
 endif
 
+" Set makeprg to run a command on pane 1 in tmux. TODO Need to tweak?
+set makeprg=tmux\ send-keys\ -t\ 1\ 'clear'\ C-m&&\ tmux\ send-keys\ -t\ 1\ 'compile_cmd'\ C-m
+
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
 vnoremap <C-y> "+y
@@ -99,7 +102,6 @@ command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Need a silent make
 command Smake silent make | redraw!
-
 
 " Let's write a local init function that gets called each time vim 
 " is opened. We'll look at current directory look for a file called 
@@ -343,7 +345,7 @@ nnoremap <leader>p :FZF<CR>
 let g:gundo_prefer_python3 = 1
 
 " ------gruvbox-------
-" colorscheme gruvbox
+colorscheme gruvbox
 
 " -----Buftabline-----
 let g:buftabline_indicators = 1
