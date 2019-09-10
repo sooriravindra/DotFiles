@@ -42,6 +42,9 @@ set scrolloff=999
 set ruler
 set rulerformat=\ »\ \%c\ «\ %P\ %L
 
+" Show the partial commands in the status bar
+set showcmd
+
 " Highlight the line where the cursor is located
 set cursorline
 hi CursorLine   cterm=NONE ctermbg=236
