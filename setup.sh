@@ -11,12 +11,11 @@ function confirm_action {
     fi    
 }
 
-for file in ".vi_mode.sh" ".tmux.conf" ".vimrc"
+for file in ".vi_mode.sh" ".tmux.conf" ".vimrc" ".bashrc" ".aliases.sh"
 do
-    confirm_action "Copy $file to $destination/" "cp $file $destination/$file"
+    confirm_action "Copy $file to $destination/ ?" "cp -i $file $destination/$file"
 done
 
-confirm_action "Add vi_mode to bashrc?" "echo 'source ~/.vi_mode.sh' >> ~/.bashrc"
 confirm_action "Install Plug for Vim?" "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim"
 confirm_action "Install Vim plugins now?" "vim +PlugInstall +qall"
 echo ""
@@ -30,6 +29,3 @@ echo "     88        .88.   88  V888 db        "
 echo "     YP      Y888888P VP   V8P VP        "
 echo "========================================="
 echo ""
-
-# TODO
-# Add aliases.sh
