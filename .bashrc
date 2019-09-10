@@ -19,3 +19,4 @@ PS1='[\u@\h \W]\$ '
 check_and_source ~/.vi_mode.sh
 check_and_source ~/.aliases.sh
 check_and_source ~/.fzf.bash
+check_and_source ~/.hidden.sh
