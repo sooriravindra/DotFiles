@@ -113,14 +113,14 @@ command Smake silent make | redraw!
 " vimrc and commit it to a repo.
 
 function VimLocalInit()
-    let l:welcome_msg=""
+    let l:welcome_msg="[GG]"
     if filereadable("vimrc")
-               let l:welcome_msg.="Sourcing local vimrc. "
-               source vimrc
+        let l:welcome_msg.=" Sourcing local vimrc. "
+        source vimrc
     endif
-    if filereadable("cscope.out")
-               let l:welcome_msg.="Adding cscope.out. "
-               cs add cscope.out
+    if filereadable("cscope.out") && executable("cscope")
+        let l:welcome_msg.=" cscope connected."
+        cs add cscope.out
     endif
     echom l:welcome_msg
 endfunction
