@@ -74,7 +74,7 @@ set pastetoggle=<F2>
 " Make grep sane. Use recursive by default. Use ag if available
 " See https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-    set grepprg=ag 
+    set grepprg=ag
 else
     set grepprg=grep\ -rn
 endif
@@ -98,18 +98,18 @@ vnoremap <C-p> "+gP
 "                   Custom functions go here:
 " ====================================================================
 
-" Add a sensible Grep command. silent removes shell output, redraw 
-" needed to fix display after suppressing output. grep uses grepprg 
+" Add a sensible Grep command. silent removes shell output, redraw
+" needed to fix display after suppressing output. grep uses grepprg
 " which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Need a silent make
 command Smake silent make | redraw!
 
-" Let's write a local init function that gets called each time vim 
-" is opened. We'll look at current directory look for a file called 
-" vimrc in the directory and source it, add cscope file if found. A 
-" nice trick is to set project specific stuff like makeprg set in 
+" Let's write a local init function that gets called each time vim
+" is opened. We'll look at current directory look for a file called
+" vimrc in the directory and source it, add cscope file if found. A
+" nice trick is to set project specific stuff like makeprg set in
 " vimrc and commit it to a repo.
 
 function VimLocalInit()
@@ -211,6 +211,7 @@ inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
 " leader + l      = Close all other windows
 " leader + m      = Run makeprg (Smake command)
 " leader + p      = Fuzzy search files
+" leader + q      = Remove trailing whitespace
 " leader + r      = Reload cscope database
 " leader + s      = Jump to cscope symbol
 " leader + t      = Status bar toggle
@@ -239,7 +240,7 @@ nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
 nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
 
 " mapping for grep
-nnoremap <leader>f :Grep 
+nnoremap <leader>f :Grep
 
 " mapping Gundo
 nnoremap <leader>u :GundoToggle <Enter>
@@ -258,6 +259,9 @@ nnoremap <silent> <leader>v :call ToggleGstatus()<Enter>
 
 " Reload cscope
 nnoremap <silent> <leader>r :call ReloadCscope()<Enter><Enter>
+
+" Remove trailing whitespace
+nnoremap <leader>q :%s/\s\+$//e <Enter>
 
 " =======================================================================
 "                      Autocommands here:
@@ -286,8 +290,8 @@ call plug#begin('~/.vim/plugged')
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 " Buftabline provides the buffer line which is the only reason I used Airline
-" 
-" Plug 'lervag/vimtex' 
+"
+" Plug 'lervag/vimtex'
 " Instead : latexmk -pdf -pvc -interaction=nonstopmode <sample.tex>
 "
 " Plug 'scrooloose/nerdcommenter'
