@@ -14,6 +14,7 @@ check_and_source () {
 [ -n $(command -v vim) ] && export EDITOR=vim
 [ -d ~/bin ] && export PATH=$PATH:~/bin
 
+HISTCONTROL=ignorespace
 PS1='[\u@\h \W]\$ '
 
 check_and_source ~/.vi_mode.sh
