@@ -80,7 +80,7 @@ else
 endif
 
 " Set makeprg to run a command on pane 1 in tmux. TODO Need to tweak?
-set makeprg=tmux\ send-keys\ -t\ 1\ 'clear'\ C-m&&\ tmux\ send-keys\ -t\ 1\ 'compile_cmd'\ C-m
+set makeprg=tmux\ send-keys\ -t\ 1\ '\ clear'\ C-m\ &&\ tmux\ send-keys\ -t\ 1\ '\ compile_cmd\ \\\|\\\|\ !!'\ C-m
 
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
