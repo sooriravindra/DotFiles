@@ -128,6 +128,7 @@ endfunction
 function ReloadCscope()
     !cscope -qRb
     cs reset 1
+    cs add cscope.out
 endfunction
 
 " Toggle the status bar, disabled by default
@@ -346,7 +347,7 @@ nnoremap <leader>/ :Commentary<CR>
 
 " -------FZF--------
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>p :FZF<CR>
+nnoremap <leader>p :execute system('git rev-parse --is-inside-work-tree') =~ 'true' ? 'GFiles' : 'Files'<CR>
 
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
