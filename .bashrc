@@ -12,7 +12,7 @@ check_and_source () {
 
 [ -e ~/.dircolors ] && eval $(dircolors -b ~/.dircolors)
 [ -n $(command -v vim) ] && export EDITOR=vim
-[ -d ~/bin ] && export PATH=$PATH:~/bin
+[ -d ~/bin ] && [[ ":$PATH:" != *"~/bin"* ]] && PATH="~/bin/:${PATH}"
 
 HISTCONTROL=ignorespace
 PS1='[\u@\h \W]\$ '

@@ -4,6 +4,13 @@ com Q q
 com Wq wq
 com WQ wq
 
+" Read file automatically if changed on disk
+set autoread
+
+" New splits below current and to the right
+set splitbelow
+set splitright
+
 " Set 256 colour mode
 set t_Co=256
 
@@ -105,6 +112,15 @@ command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
 " Need a silent make
 command Smake silent make | redraw!
+
+" Force autoread
+function _Autoread(timer)
+    silent checktime %
+endfunction
+
+function! Autoread()
+    let timer = timer_start(200,'_Autoread', {'repeat': 5})
+endfunction
 
 " Let's write a local init function that gets called each time vim
 " is opened. We'll look at current directory look for a file called
