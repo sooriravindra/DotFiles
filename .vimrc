@@ -86,8 +86,6 @@ else
     set grepprg=grep\ -rn
 endif
 
-" Set makeprg to run a command on pane 1 in tmux. TODO Need to tweak?
-set makeprg=tmux\ send-keys\ -t\ 1\ '\ clear'\ C-m\ &&\ tmux\ send-keys\ -t\ 1\ '\ if\ type\ compile_cmd;\ then\ compile_cmd;\ else\ !!;\ fi'\ C-m
 
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
@@ -110,8 +108,22 @@ vnoremap <C-p> "+gP
 " which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
-" Need a silent make
-command Smake silent make | redraw!
+if v:version > 800
+    " If higher than vim8 use the inbuilt terminal
+    function! SideRun()
+        only
+        execute "vert term bash -c \"" &makeprg "\""
+        wincmd p
+    endfunction
+
+    command! Smake :call SideRun()
+else
+    " Set makeprg to run a command on pane 1 in tmux. TODO Need to tweak?
+    set makeprg=tmux\ send-keys\ -t\ 1\ '\ clear'\ C-m\ &&\ tmux\ send-keys\ -t\ 1\ '\ if\ type\ compile_cmd;\ then\ compile_cmd;\ else\ !!;\ fi'\ C-m
+
+    " Need a silent make
+    command! Smake silent make | redraw!
+endif
 
 " Force autoread
 function _Autoread(timer)
