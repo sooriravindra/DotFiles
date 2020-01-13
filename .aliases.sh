@@ -49,7 +49,7 @@ o() {
     if [ -z "$1" ]; then 
         echo "Usage: o <path/file_name>" 
     else 
-        xdg-open $1 &>/dev/null &
+        xdg-open "$1" &>/dev/null &
     fi
 }
 
