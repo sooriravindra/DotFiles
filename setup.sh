@@ -1,7 +1,17 @@
 #!/bin/bash
+
+# Uses stow to setup the packages. And install Plug (Plugin manager) and other vim plugins.
+# A package is installed simply as "stow -t ~ package"
+# To uninstall "stow -t ~ --delete package"
+
+echo -n "Looking for stow... "
+command -v stow || (echo "Stow not found! Please install stow"; exit)
+echo "Found :)"
+echo
+
 destination=~
 function confirm_action {
-    echo $1
+    echo "$1"
     read -r -p ">> [Y/n] " response  
     response=${response,,} # tolower  
     if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then     
@@ -11,9 +21,10 @@ function confirm_action {
     fi    
 }
 
-for file in ".vi_mode.sh" ".tmux.conf" ".vimrc" ".bashrc" ".aliases.sh"
+for package in "vim" "tmux" "bash" "xbindkeys"
 do
-    confirm_action "Copy $file to $destination/ ?" "cp -i $file $destination/$file"
+    package_string="Stow $package to $destination ? Package contains $(echo ; ls -A $package)"
+    confirm_action "$package_string" "stow -t  $destination $package"
 done
 
 confirm_action "Install Plug for Vim?" "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim"
