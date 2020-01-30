@@ -5,6 +5,7 @@ bind 'set vi-ins-mode-string ""'
 bind 'set vi-cmd-mode-string ">>"'
 bind -m vi-insert "\C-l":clear-screen
 bind -m vi-insert "\C-a":beginning-of-line
+bind -m vi-insert "\C-w":unix-word-rubout
 bind -m vi-insert "\C-e":end-of-line
 bind -m vi-insert "\C-u":unix-line-discard
 bind -m vi-insert "\C-k":kill-line

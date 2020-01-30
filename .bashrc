@@ -12,6 +12,7 @@ check_and_source () {
 
 [ -e ~/.dircolors ] && eval $(dircolors -b ~/.dircolors)
 [ -n $(command -v vim) ] && export EDITOR=vim
+[ -n $(command -v firefox) ] && export BROWSER=firefox
 [ -d ~/bin ] && [[ ":$PATH:" != *"`readlink -f ~/bin`"* ]] && PATH="`readlink -f ~/bin/`:${PATH}"
 
 HISTCONTROL=ignorespace
