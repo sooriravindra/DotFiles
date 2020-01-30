@@ -67,15 +67,15 @@
 
 
 # Volume mute
-"pactl set-sink-mute @DEFAULT_SINK@ toggle && /home/rsoori/bin/dwm_status.sh"
+"pactl set-sink-mute @DEFAULT_SINK@ toggle && /home/rsoori/bin/dwm_status"
 XF86AudioMute
 
 # Volume decrease
-"pactl set-sink-volume @DEFAULT_SINK@ -2000 && /home/rsoori/bin/dwm_status.sh"
+"pactl set-sink-volume @DEFAULT_SINK@ -2000 && /home/rsoori/bin/dwm_status"
 XF86AudioLowerVolume
 
 # Volume increase
-"pactl set-sink-volume @DEFAULT_SINK@ +2000 && /home/rsoori/bin/dwm_status.sh"
+"pactl set-sink-volume @DEFAULT_SINK@ +2000 && /home/rsoori/bin/dwm_status"
 XF86AudioRaiseVolume
 
 # Mic
@@ -83,11 +83,11 @@ XF86AudioRaiseVolume
 # XF86AudioMicMute
 
 # Brightness down
-"xbacklight -dec 10 && /home/rsoori/bin/dwm_status.sh"
+"xbacklight -dec 10 && /home/rsoori/bin/dwm_status"
 XF86MonBrightnessDown
 
 # Brightness up
-"xbacklight -inc 10 && /home/rsoori/bin/dwm_status.sh"
+"xbacklight -inc 10 && /home/rsoori/bin/dwm_status"
 XF86MonBrightnessUp 
 
 # Display
@@ -109,6 +109,22 @@ XF86Tools
 # Favourites
 # ""
 # XF86Favorites
+
+# Play/pause
+# ""
+# XF86AudioPlay
+
+# Stop
+# ""
+# XF86AudioStop
+
+# Next
+# ""
+# XF86AudioNext
+
+# Prev
+# ""
+# XF86AudioPrev
 
 ##################################
 # End of xbindkeys configuration #
