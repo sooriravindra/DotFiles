@@ -1,0 +1,4 @@
+! Following prevents key 66 (capslock code) from activating lock
+clear lock
+! Following binds 66 to send Escape normally and CapsLock when pressed with Shift
+keycode 66 = Escape Caps_Lock NoSymbol NoSymbol
