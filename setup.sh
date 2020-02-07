@@ -21,7 +21,7 @@ function confirm_action {
     fi    
 }
 
-for package in "vim" "tmux" "bash" "xbindkeys" "emacs" "xmodmap" "spotifyd"
+for package in "vim" "tmux" "bash" "emacs" "spotifyd" "X"
 do
     package_string="Stow $package to $destination ? Package contains $(echo ; ls -A $package)"
     confirm_action "$package_string" "stow -t  $destination $package"
