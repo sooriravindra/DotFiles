@@ -94,6 +94,10 @@ XF86MonBrightnessUp
 "slimlock"
 XF86Display
 
+# Print screen
+"scrot"
+Print
+
 # Wifi
 # ""
 # XF86WLAN
