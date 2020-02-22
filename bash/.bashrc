@@ -15,8 +15,9 @@ check_and_source () {
 [ -n $(command -v firefox) ] && export BROWSER=firefox
 [ -d ~/bin ] && [[ ":$PATH:" != *"`readlink -f ~/bin`"* ]] && PATH="`readlink -f ~/bin/`:${PATH}"
 
+PROMPT_COMMAND="dirs | awk '{ print \"[\"\$1\"]\"}'"
 HISTCONTROL=ignorespace
-PS1='[\u@\h \W]\$ '
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]: '
 
 check_and_source ~/.vi_mode.sh
 check_and_source ~/.aliases.sh
