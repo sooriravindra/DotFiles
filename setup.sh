@@ -5,7 +5,7 @@
 # To uninstall "stow -t ~ --delete package"
 
 echo -n "Looking for stow... "
-command -v stow || (echo "Stow not found! Please install stow"; exit)
+command -v stow || { echo "Stow not found! Please install stow"; exit 1; }
 echo "Found :)"
 echo
 
