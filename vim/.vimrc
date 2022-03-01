@@ -14,6 +14,13 @@ set splitright
 " Set 256 colour mode
 set t_Co=256
 
+" Set truecolor if support exists
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
+
 " Enables utf-8 chars in Vim
 set enc=utf-8
 
@@ -349,11 +356,6 @@ Plug 'mattn/emmet-vim'
 
 Plug 'machakann/vim-sandwich'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Install coc-clangd by using the below vim command
-" :CocInstall coc-langd
-" Then install clangd on the machine
-
 Plug 'sheerun/vim-polyglot'
 
 " Plug 'junegunn/goyo.vim'
@@ -373,6 +375,12 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'lifepillar/vim-solarized8'
 
 Plug 'ghifarit53/tokyonight-vim'
+
+" Here comes the Dragon!
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Install coc-clangd by using the below vim command
+" :CocInstall coc-langd
+" Then install clangd on the machine
 
 call plug#end()
 
