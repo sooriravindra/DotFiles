@@ -49,7 +49,12 @@ o() {
     if [ -z "$1" ]; then 
         echo "Usage: o <path/file_name>" 
     else 
-        xdg-open "$1" &>/dev/null &
+        if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+            # Windows Subsystem for Linux
+            powershell.exe /C start "$1"
+        else
+            xdg-open "$1" &>/dev/null &
+        fi
     fi
 }
 
@@ -58,6 +63,7 @@ alias la='ls -a'
 alias ll='ls -ltr'
 alias grep='grep --color=auto'
 alias ironcity='compas -t "~/bin/ironcity_attach"'
+alias ec='emacsclient'
 
 # Remove things that depend on xdg-open
 if [[ -z $(command -v xdg-open) ]]; then

@@ -7,15 +7,15 @@
 
 
 check_and_source () {
-    [ -f $1 ] && source $1
+    [[ -f $1 ]] && source $1
 }
 
-[ -e ~/.dircolors ] && eval $(dircolors -b ~/.dircolors)
-[ -n $(command -v vim) ] && export EDITOR=vim
-[ -n $(command -v firefox) ] && export BROWSER=firefox
-[ -d ~/bin ] && [[ ":$PATH:" != *"`readlink -f ~/bin`"* ]] && PATH="`readlink -f ~/bin/`:${PATH}"
+[[ -e ~/.dircolors ]] && eval $(dircolors -b ~/.dircolors)
+[[ -n $(command -v vim) ]] && export EDITOR=vim
+[[ -n $(command -v firefox) ]] && export BROWSER=firefox
+[[ -d ~/bin ]] && [[ ":$PATH:" != *"`readlink -f ~/bin`"* ]] && PATH="`readlink -f ~/bin/`:${PATH}"
 
-PROMPT_COMMAND='if [ $? = 0 ]; then PROMPT_COLOR="\033[1;32m"; else PROMPT_COLOR="\033[1;31m"; fi'
+PROMPT_COMMAND='if [[ $? = 0 ]]; then PROMPT_COLOR="\033[1;32m"; else PROMPT_COLOR="\033[1;31m"; fi'
 HISTCONTROL=ignorespace
 PS1='\[$(echo -ne $PROMPT_COLOR)\]\u@\h\[\033[00m\] \w $ '
 

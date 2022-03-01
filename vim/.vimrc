@@ -31,9 +31,9 @@ set background=dark
 
 " colorscheme solarized? Nah. We'll set gruvbox later
 
-" Show line numbers and make them relative
+" Show line numbers and ? make them relative
 set number
-set relativenumber
+" set relativenumber
 
 " Show menu when autocompleting commands
 set wildmenu
@@ -349,6 +349,15 @@ Plug 'mattn/emmet-vim'
 
 Plug 'machakann/vim-sandwich'
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Install coc-clangd by using the below vim command
+" :CocInstall coc-langd
+" Then install clangd on the machine
+
+Plug 'sheerun/vim-polyglot'
+
+" Plug 'junegunn/goyo.vim'
+
 " God bless Tim Pope
 
 Plug 'tpope/vim-fugitive'
@@ -357,9 +366,13 @@ Plug 'tpope/vim-commentary'
 
 " Colorschemes
 
-Plug 'sickill/vim-monokai'
+Plug 'joshdick/onedark.vim'
 
-Plug 'morhetz/gruvbox'
+Plug 'gruvbox-community/gruvbox'
+
+Plug 'lifepillar/vim-solarized8'
+
+Plug 'ghifarit53/tokyonight-vim'
 
 call plug#end()
 
@@ -375,13 +388,18 @@ nnoremap <leader>/ :Commentary<CR>
 
 " -------FZF--------
 nnoremap <leader>b :Buffers<CR>
+" Below command binds <leader>p to list only git files if inside a git repo
 nnoremap <leader>p :execute system('git rev-parse --is-inside-work-tree') =~ 'true' ? 'GFiles' : 'Files'<CR>
+" To list all files even in git repositories:
+" nnoremap <leader>p :Files<CR>
 
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
 
-" ------gruvbox-------
-colorscheme gruvbox
+" ------Colorscheme-------
+" colorscheme solarized8_flat
+let g:tokyonight_disable_italic_comment = 1
+colorscheme tokyonight
 
 " -----Buftabline-----
 let g:buftabline_indicators = 1
