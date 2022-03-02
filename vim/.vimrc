@@ -115,7 +115,14 @@ vnoremap <C-p> "+gP
 " which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
-if v:version > 800
+if exists('$TMUX')
+    let g:tmux_send_cmd=":silent !tmux send-keys -t 1 'clear' C-m ; "
+    let g:tmux_send_cmd.="tmux send-keys -t 1 'type compile_cmd && compile_cmd && date' C-m"
+
+    " Smake shall send keys to pane 1 in tmux, TODO should this be better?
+    " command! Smake execute ':silent !tmux send-keys -t 1 "clear" C-m ; tmux send-keys -t 1 "type compile_cmd && compile_cmd" C-m'  | execute ':redraw!'
+    command! Smake execute g:tmux_send_cmd | execute ':redraw!'
+elseif v:version > 800
     " If higher than vim8 use the inbuilt terminal
     function! SideRun()
         only
@@ -124,12 +131,6 @@ if v:version > 800
     endfunction
 
     command! Smake :call SideRun()
-else
-    " Set makeprg to run a command on pane 1 in tmux. TODO Need to tweak?
-    set makeprg=tmux\ send-keys\ -t\ 1\ '\ clear'\ C-m\ &&\ tmux\ send-keys\ -t\ 1\ '\ if\ type\ compile_cmd;\ then\ compile_cmd;\ else\ !!;\ fi'\ C-m
-
-    " Need a silent make
-    command! Smake silent make | redraw!
 endif
 
 " Force autoread
@@ -143,15 +144,15 @@ endfunction
 
 " Let's write a local init function that gets called each time vim
 " is opened. We'll look at current directory look for a file called
-" vimrc in the directory and source it, add cscope file if found. A
-" nice trick is to set project specific stuff like makeprg set in
-" vimrc and commit it to a repo.
+" .local_vimrc in the directory and source it, add cscope file if 
+" found. A nice trick is to set project specific stuff like makeprg 
+" set in .local_vimrc and commit it to a repo.
 
 function VimLocalInit()
     let l:welcome_msg="[GG]"
-    if filereadable("vimrc")
-        let l:welcome_msg.=" Sourcing local vimrc. "
-        source vimrc
+    if filereadable(".local_vimrc")
+        let l:welcome_msg.=" Sourcing local .local_vimrc. "
+        source .local_vimrc
     endif
     if filereadable("cscope.out") && executable("cscope")
         let l:welcome_msg.=" cscope connected."
@@ -216,11 +217,11 @@ endfunction
 
 " Toggle fugitive git status
 
-function ToggleGstatus()
+function ToggleGit()
     if buflisted(bufname('.git/index'))
         bd .git/index
     else
-        Gstatus
+        Git
     endif
 endfunction
 
@@ -229,75 +230,6 @@ nnoremap <silent> <C-D> :call SmoothScroll(0)<Enter>
 
 inoremap <silent> <C-U> <Esc>:call SmoothScroll(1)<Enter>i
 inoremap <silent> <C-D> <Esc>:call SmoothScroll(0)<Enter>i
-
-" ====================================================================
-"                    Leader commands follow:
-" ====================================================================
-"
-" List all the commands here. Lest you forget.
-"
-" leader + leader = Go to last buffer
-" leader + /      = Comment the line/block (commentary)
-" leader + b      = Fuzzy search buffers
-" leader + c      = Centre cursor toggle
-" leader + f      = Run grepprg (Grep command)
-" leader + g      = Jump to cscope definition
-" leader + j      = Next buffer
-" leader + k      = Prev buffer
-" leader + l      = Close all other windows
-" leader + m      = Run makeprg (Smake command)
-" leader + p      = Fuzzy search files
-" leader + q      = Remove trailing whitespace
-" leader + r      = Reload cscope database
-" leader + s      = Jump to cscope symbol
-" leader + t      = Status bar toggle
-" leader + u      = Gundo toggle
-" leader + v      = Gstatus toggle (fugitive)
-" leader + x      = Delete buffer
-
-" Let us use space as leader. So that we can use both L & R hand
-let mapleader=" "
-
-" Quick swap buffers
-nnoremap <leader><leader> <C-^>
-
-" Navigate buffers
-nnoremap <leader>k :bp<CR>
-nnoremap <leader>j :bn <CR>
-
-" Close current buffer
-nnoremap <leader>x :bd <CR>
-
-" Close all other windows
-nnoremap <leader>l :only <CR>
-
-" cscope query symbol and definition
-nnoremap <silent> <leader>s :cs f s <C-R><C-W><Enter>
-nnoremap <silent> <leader>g :cs f g <C-R><C-W><Enter>
-
-" mapping for grep
-nnoremap <leader>f :Grep
-
-" mapping Gundo
-nnoremap <leader>u :GundoToggle <Enter>
-
-" lets make faster
-nnoremap <leader>m :Smake <CR>
-
-" Toggle center cursor
-nnoremap <silent> <leader>c :call ToggleCursor()<Enter>
-
-" Toggle status bar
-nnoremap <silent> <leader>t :call ToggleStatus()<Enter>
-
-" Toggle Gstatus
-nnoremap <silent> <leader>v :call ToggleGstatus()<Enter>
-
-" Reload cscope
-nnoremap <silent> <leader>r :call ReloadCscope()<Enter><Enter>
-
-" Remove trailing whitespace
-nnoremap <leader>q :%s/\s\+$//e <Enter>
 
 " =======================================================================
 "                      Autocommands here:
@@ -358,6 +290,8 @@ Plug 'machakann/vim-sandwich'
 
 Plug 'sheerun/vim-polyglot'
 
+Plug 'liuchengxu/vim-which-key'
+
 " Plug 'junegunn/goyo.vim'
 
 " God bless Tim Pope
@@ -384,6 +318,120 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
+" ====================================================================
+"                    Leader commands follow:
+" ====================================================================
+"
+" List all the commands here. Lest you forget.
+"
+" leader + leader  = Go to last buffer
+" leader + /       = Comment the line/block (commentary)
+" leader + j       = Next buffer
+" leader + k       = Prev buffer
+" leader + bd      = Delete buffer
+" leader + bn      = Next buffer
+" leader + bp      = Prev buffer
+" leader + cg      = Jump to cscope definition
+" leader + cr      = Reload cscope database
+" leader + cs      = Jump to cscope symbol
+" leader + fb      = Fuzzy search buffers
+" leader + fp      = Fuzzy search files
+" leader + mm      = Run makeprg (Smake command)
+" leader + sf      = Run grepprg (Grep command)
+" leader + su      = Gundo toggle
+" leader + sw      = Remove trailing whitespace
+" leader + tc      = Centre cursor toggle
+" leader + tg      = Gstatus toggle (fugitive)
+" leader + ts      = Status bar toggle
+" leader + wn      = Close all other windows
+
+" Let us use space as leader. So that we can use both L & R hand
+let mapleader=" "
+
+let g:which_key_map = {}
+
+" Quick swap buffers
+nnoremap <leader><leader> <C-^>
+let g:which_key_map[' '] = 'switch-buffer'
+
+" Navigate buffers
+nnoremap <leader>k :bp<CR>
+nnoremap <leader>j :bn <CR>
+let g:which_key_map.k = 'previous-buffer'
+let g:which_key_map.j = 'next-buffer'
+
+" Close current buffer
+nnoremap <leader>bd :bd <CR>
+
+nnoremap <leader>bp :bp<CR>
+nnoremap <leader>bn :bn <CR>
+let g:which_key_map.b = {
+            \ 'name' : '+buffer',
+            \ 'd' : 'buffer-delete',
+            \ 'n' : 'buffer-next',
+            \ 'p' : 'buffer-previous'
+            \ }
+
+
+" Close all other windows
+nnoremap <leader>wn :only <CR>
+
+let g:which_key_map.w = {
+            \ 'name' : '+window',
+            \ 'n' : 'only-window'
+            \ }
+
+" mapping for grep
+nnoremap <leader>sf :Grep
+
+" mapping Gundo
+nnoremap <leader>su :GundoToggle <Enter>
+
+" Remove trailing whitespace
+nnoremap <leader>sw :%s/\s\+$//e <Enter>
+
+" lets make faster
+nnoremap <leader>sm :Smake <CR>
+
+let g:which_key_map.s = {
+            \ 'name' : '+super',
+            \ 'f' : 'grep-find',
+            \ 'u' : 'gundo',
+            \ 'w' : 'remove-trailing-whitespace',
+            \ 'm' : 'super-make'
+            \ }
+
+" Toggle center cursor
+nnoremap <silent> <leader>tc :call ToggleCursor()<Enter>
+
+" Toggle status bar
+nnoremap <silent> <leader>ts :call ToggleStatus()<Enter>
+
+" Toggle Gstatus
+nnoremap <silent> <leader>tg :call ToggleGit()<Enter>
+
+let g:which_key_map.t = {
+            \ 'name' : '+toggle',
+            \ 'c' : 'toggle-cursor-line',
+            \ 's' : 'toggle-staus-bar',
+            \ 'g' : 'toggle-git'
+            \ }
+
+" Reload cscope
+nnoremap <silent> <leader>cr :call ReloadCscope()<Enter><Enter>
+
+" cscope query symbol and definition
+nnoremap <silent> <leader>cs :cs f s <C-R><C-W><Enter>
+nnoremap <silent> <leader>cg :cs f g <C-R><C-W><Enter>
+
+let g:which_key_map.c = {
+            \ 'name' : '+cscope',
+            \ 'r' : 'cscope-reload',
+            \ 's' : 'cscope-symbol',
+            \ 'g' : 'cscope-definition'
+            \ }
+
+
 "
 "  ===================================================================
 "                        Plug configs go here
@@ -395,11 +443,22 @@ vnoremap <leader>/ :Commentary<CR>
 nnoremap <leader>/ :Commentary<CR>
 
 " -------FZF--------
-nnoremap <leader>b :Buffers<CR>
+
+nnoremap <leader>fb :Buffers<CR>
 " Below command binds <leader>p to list only git files if inside a git repo
 nnoremap <leader>p :execute system('git rev-parse --is-inside-work-tree') =~ 'true' ? 'GFiles' : 'Files'<CR>
 " To list all files even in git repositories:
-" nnoremap <leader>p :Files<CR>
+nnoremap <leader>fp :Files<CR>
+" To fuzzy search lines in all buffers
+nnoremap <leader>fl :Lines<CR>
+
+let g:which_key_map.p = 'fzf-relevant-files'
+let g:which_key_map.f = {
+            \ 'name' : '+fzf',
+            \ 'b' : 'search-buffers',
+            \ 'p' : 'fuzzy-search-files',
+            \ 'l' : 'fuzzy-search-lines'
+            \ }
 
 "" -------Gundo-------
 let g:gundo_prefer_python3 = 1
@@ -415,3 +474,22 @@ let g:buftabline_indicators = 1
 " -----netrw----------
 let g:netrw_banner = 0
 nnoremap - :e shodisu_ \| Explore \| bw! shodisu_<CR>
+
+" ----coc.nvim--------
+inoremap <silent><expr> <TAB>
+            \ pumvisible() ? coc#_select_confirm() :
+            \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+" ---vim-whichkey---
+call which_key#register('<Space>', "g:which_key_map")
+nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
+
