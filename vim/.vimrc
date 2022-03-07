@@ -375,10 +375,18 @@ let g:which_key_map.b = {
 
 " Close all other windows
 nnoremap <leader>wn :only <CR>
+nnoremap <leader>wh <C-w>h
+nnoremap <leader>wj <C-w>j
+nnoremap <leader>wk <C-w>k
+nnoremap <leader>wl <C-w>l
 
 let g:which_key_map.w = {
             \ 'name' : '+window',
-            \ 'n' : 'only-window'
+            \ 'n' : 'window-only',
+            \ 'h' : 'window-left',
+            \ 'j' : 'window-down',
+            \ 'k' : 'window-up',
+            \ 'l' : 'window-right',
             \ }
 
 " mapping for grep
