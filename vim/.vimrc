@@ -425,10 +425,11 @@ nnoremap <silent> <leader>cs :cs f s <C-R><C-W><Enter>
 nnoremap <silent> <leader>cg :cs f g <C-R><C-W><Enter>
 
 let g:which_key_map.c = {
-            \ 'name' : '+cscope',
+            \ 'name' : '+coc-cscope',
             \ 'r' : 'cscope-reload',
             \ 's' : 'cscope-symbol',
-            \ 'g' : 'cscope-definition'
+            \ 'g' : 'cscope-definition',
+            \ 'j' : 'coc-next-error',
             \ }
 
 
@@ -488,6 +489,7 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
+nnoremap <leader>cj :call CocAction('diagnosticNext')<CR>
 
 " ---vim-whichkey---
 call which_key#register('<Space>', "g:which_key_map")
