@@ -421,7 +421,7 @@ nnoremap <silent> <leader>tg :call ToggleGit()<Enter>
 let g:which_key_map.t = {
             \ 'name' : '+toggle',
             \ 'c' : 'toggle-cursor-line',
-            \ 's' : 'toggle-staus-bar',
+            \ 's' : 'toggle-status-bar',
             \ 'g' : 'toggle-git'
             \ }
 
@@ -437,7 +437,6 @@ let g:which_key_map.c = {
             \ 'r' : 'cscope-reload',
             \ 's' : 'cscope-symbol',
             \ 'g' : 'cscope-definition',
-            \ 'j' : 'coc-next-error',
             \ }
 
 
@@ -497,7 +496,15 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
+
 nnoremap <leader>cj :call CocAction('diagnosticNext')<CR>
+let g:which_key_map.c['j'] = 'coc-next-error'
+
+nnoremap <leader>ch :CocCommand clangd.switchSourceHeader<CR>
+let g:which_key_map.c['h'] = 'coc-switch-header'
+
+nnoremap <leader>cf :CocFix<CR>
+let g:which_key_map.c['f'] = 'coc-fix'
 
 " ---vim-whichkey---
 call which_key#register('<Space>', "g:which_key_map")
