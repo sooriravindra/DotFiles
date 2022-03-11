@@ -426,15 +426,14 @@ let g:which_key_map.t = {
             \ }
 
 " Reload cscope
-nnoremap <silent> <leader>cr :call ReloadCscope()<Enter><Enter>
-
+nnoremap <silent> <leader>cl :call ReloadCscope()<CR><CR>
 " cscope query symbol and definition
-nnoremap <silent> <leader>cs :cs f s <C-R><C-W><Enter>
-nnoremap <silent> <leader>cg :cs f g <C-R><C-W><Enter>
+nnoremap <silent> <leader>cs :cs f s <C-R><C-W><CR>
+nnoremap <silent> <leader>cg :cs f g <C-R><C-W><CR>
 
 let g:which_key_map.c = {
             \ 'name' : '+coc-cscope',
-            \ 'r' : 'cscope-reload',
+            \ 'l' : 'cscope-reload',
             \ 's' : 'cscope-symbol',
             \ 'g' : 'cscope-definition',
             \ }
@@ -505,6 +504,12 @@ let g:which_key_map.c['h'] = 'coc-switch-header'
 
 nnoremap <leader>cf :CocFix<CR>
 let g:which_key_map.c['f'] = 'coc-fix'
+
+nmap<silent> <leader>cd <Plug>(coc-definition)
+let g:which_key_map.c['d'] = 'coc-definition'
+
+nmap<silent> <leader>cr <Plug>(coc-references)
+let g:which_key_map.c['r'] = 'coc-references'
 
 " ---vim-whichkey---
 call which_key#register('<Space>', "g:which_key_map")
