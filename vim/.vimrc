@@ -161,7 +161,7 @@ function VimLocalInit()
     echom l:welcome_msg
 endfunction
 
-function ReloadCscope()
+function LoadCscope()
     !cscope -qRb
     cs reset 1
     cs add cscope.out
@@ -270,8 +270,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tommcdo/vim-lion'
 
-Plug 'ap/vim-buftabline'
-
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 Plug 'junegunn/fzf.vim'
@@ -291,6 +289,8 @@ Plug 'machakann/vim-sandwich'
 Plug 'sheerun/vim-polyglot'
 
 Plug 'liuchengxu/vim-which-key'
+
+" Plug 'ap/vim-buftabline'
 
 " Plug 'junegunn/goyo.vim'
 
@@ -322,64 +322,43 @@ call plug#end()
 "                    Leader commands follow:
 " ====================================================================
 "
-" List all the commands here. Lest you forget.
-"
-" leader + leader  = Go to last buffer
-" leader + /       = Comment the line/block (commentary)
-" leader + j       = Next buffer
-" leader + k       = Prev buffer
-" leader + bd      = Delete buffer
-" leader + bn      = Next buffer
-" leader + bp      = Prev buffer
-" leader + cg      = Jump to cscope definition
-" leader + cr      = Reload cscope database
-" leader + cs      = Jump to cscope symbol
-" leader + fb      = Fuzzy search buffers
-" leader + fp      = Fuzzy search files
-" leader + mm      = Run makeprg (Smake command)
-" leader + sf      = Run grepprg (Grep command)
-" leader + su      = Gundo toggle
-" leader + sw      = Remove trailing whitespace
-" leader + tc      = Centre cursor toggle
-" leader + tg      = Gstatus toggle (fugitive)
-" leader + ts      = Status bar toggle
-" leader + wn      = Close all other windows
+" Rely on which-key to recall commands
 
 " Let us use space as leader. So that we can use both L & R hand
 let mapleader=" "
 
 let g:which_key_map = {}
 
-" Quick swap buffers
-nnoremap <leader><leader> <C-^>
-let g:which_key_map[' '] = 'switch-buffer'
+" Search buffers
+nnoremap <leader><leader> :Buffers<CR>
+let g:which_key_map[' '] = 'search-buffers'
 
-" Navigate buffers
-nnoremap <leader>k :bp<CR>
-nnoremap <leader>j :bn <CR>
-let g:which_key_map.k = 'previous-buffer'
-let g:which_key_map.j = 'next-buffer'
+" Navigate buffers : BANNED
+" nnoremap <leader>k :bp<CR>
+" nnoremap <leader>j :bn <CR>
+" let g:which_key_map.k = 'previous-buffer'
+" let g:which_key_map.j = 'next-buffer'
 
-" Close current buffer
+"  === Buffer mappings ===
 nnoremap <leader>bd :bd <CR>
-
 nnoremap <leader>bp :bp<CR>
 nnoremap <leader>bn :bn <CR>
+nnoremap <leader>bl <C-^>
 let g:which_key_map.b = {
             \ 'name' : '+buffer',
             \ 'd' : 'buffer-delete',
             \ 'n' : 'buffer-next',
-            \ 'p' : 'buffer-previous'
+            \ 'p' : 'buffer-previous',
+            \ 'l' : 'buffer-last'
             \ }
 
 
-" Close all other windows
+" === Window mappings ===
 nnoremap <leader>wn :only <CR>
 nnoremap <leader>wh <C-w>h
 nnoremap <leader>wj <C-w>j
 nnoremap <leader>wk <C-w>k
 nnoremap <leader>wl <C-w>l
-
 let g:which_key_map.w = {
             \ 'name' : '+window',
             \ 'n' : 'window-only',
@@ -389,44 +368,36 @@ let g:which_key_map.w = {
             \ 'l' : 'window-right',
             \ }
 
+" === Special commands ===
 " mapping for grep
-nnoremap <leader>sf :Grep
-
+nnoremap <leader>sg :Grep 
 " mapping Gundo
 nnoremap <leader>su :GundoToggle <Enter>
-
 " Remove trailing whitespace
 nnoremap <leader>sw :%s/\s\+$//e <Enter>
-
-" lets make faster
+" Special make
 nnoremap <leader>sm :Smake <CR>
-
 let g:which_key_map.s = {
-            \ 'name' : '+super',
-            \ 'f' : 'grep-find',
+            \ 'name' : '+special',
+            \ 'g' : 'grep',
             \ 'u' : 'gundo',
             \ 'w' : 'remove-trailing-whitespace',
-            \ 'm' : 'super-make'
+            \ 'm' : 'special-make'
             \ }
 
-" Toggle center cursor
+" === Toggle commands ===
 nnoremap <silent> <leader>tc :call ToggleCursor()<Enter>
-
-" Toggle status bar
 nnoremap <silent> <leader>ts :call ToggleStatus()<Enter>
-
-" Toggle Gstatus
 nnoremap <silent> <leader>tg :call ToggleGit()<Enter>
-
 let g:which_key_map.t = {
             \ 'name' : '+toggle',
-            \ 'c' : 'toggle-cursor-line',
+            \ 'c' : 'toggle-cursor-offset',
             \ 's' : 'toggle-status-bar',
             \ 'g' : 'toggle-git'
             \ }
 
-" Reload cscope
-nnoremap <silent> <leader>cl :call ReloadCscope()<CR><CR>
+" === Cscope ===
+nnoremap <silent> <leader>cl :call LoadCscope()<CR><CR>
 " cscope query symbol and definition
 nnoremap <silent> <leader>cs :cs f s <C-R><C-W><CR>
 nnoremap <silent> <leader>cg :cs f g <C-R><C-W><CR>
@@ -451,14 +422,14 @@ nnoremap <leader>/ :Commentary<CR>
 
 " -------FZF--------
 
-nnoremap <leader>fb :Buffers<CR>
 " Below command binds <leader>p to list only git files if inside a git repo
 nnoremap <leader>p :execute system('git rev-parse --is-inside-work-tree') =~ 'true' ? 'GFiles' : 'Files'<CR>
 " To list all files even in git repositories:
 nnoremap <leader>fp :Files<CR>
+" Search buffers
+nnoremap <leader>fb :Buffers<CR>
 " To fuzzy search lines in all buffers
 nnoremap <leader>fl :Lines<CR>
-
 let g:which_key_map.p = 'fzf-relevant-files'
 let g:which_key_map.f = {
             \ 'name' : '+fzf',
@@ -474,9 +445,6 @@ let g:gundo_prefer_python3 = 1
 " colorscheme solarized8_flat
 let g:tokyonight_disable_italic_comment = 1
 colorscheme tokyonight
-
-" -----Buftabline-----
-let g:buftabline_indicators = 1
 
 " -----netrw----------
 let g:netrw_banner = 0
@@ -512,6 +480,8 @@ nmap<silent> <leader>cr <Plug>(coc-references)
 let g:which_key_map.c['r'] = 'coc-references'
 
 " ---vim-whichkey---
+" Timeout for the whichkey popup 500ms
+set timeoutlen=250
 call which_key#register('<Space>', "g:which_key_map")
 nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
 
