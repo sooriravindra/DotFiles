@@ -335,8 +335,8 @@ let mapleader=" "
 let g:which_key_map = {}
 
 " Search buffers
-nnoremap <leader><leader> :Buffers<CR>
-let g:which_key_map[' '] = 'search-buffers'
+nmap <silent> <leader><leader> :Buffers<CR>
+let g:which_key_map = { ' ' :[':Buffers', 'search-buffers']}
 
 " Navigate buffers : BANNED
 " nnoremap <leader>k :bp<CR>
@@ -483,6 +483,9 @@ let g:which_key_map.c['d'] = 'coc-definition'
 
 nmap<silent> <leader>cr <Plug>(coc-references)
 let g:which_key_map.c['r'] = 'coc-references'
+
+nmap<leader>cn <Plug>(coc-rename)
+let g:which_key_map.c['n'] = 'coc-rename-experimental'
 
 " ---vim-whichkey---
 " Timeout for the whichkey popup 500ms
