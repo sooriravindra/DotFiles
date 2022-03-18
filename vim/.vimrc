@@ -63,6 +63,9 @@ set showcmd
 set cursorline
 hi CursorLine   cterm=NONE ctermbg=236
 
+" Show tab line always, so the current buffer filename is on top
+set showtabline=2
+
 " Set tab as space with 4 characters
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 
@@ -92,7 +95,6 @@ if executable('ag')
 else
     set grepprg=grep\ -rn
 endif
-
 
 " Enable ^y and ^p to yank and paste to system clipboard
 nnoremap <C-y> "+y
@@ -267,6 +269,15 @@ call plug#begin('~/.vim/plugged')
 "
 " Plug 'tpope/vim-vinegar'
 " Replaced by adding some netrw configs
+"
+" Plug 'ap/vim-buftabline'
+" Replaced by fzf :Buffers and setting showtabline=2
+"
+" Plug 'nachumk/systemverilog.vim'
+" Replaced by vim-polyglot
+"
+" Plug 'junegunn/goyo.vim'
+" Unused for now
 
 Plug 'tommcdo/vim-lion'
 
@@ -280,8 +291,6 @@ Plug 'airblade/vim-gitgutter'
 
 Plug 'sjl/gundo.vim'
 
-Plug 'nachumk/systemverilog.vim'
-
 Plug 'mattn/emmet-vim'
 
 Plug 'machakann/vim-sandwich'
@@ -290,17 +299,13 @@ Plug 'sheerun/vim-polyglot'
 
 Plug 'liuchengxu/vim-which-key'
 
-" Plug 'ap/vim-buftabline'
-
-" Plug 'junegunn/goyo.vim'
-
 " God bless Tim Pope
 
 Plug 'tpope/vim-fugitive'
 
 Plug 'tpope/vim-commentary'
 
-" Colorschemes
+" --- Colorschemes ---
 
 Plug 'joshdick/onedark.vim'
 
