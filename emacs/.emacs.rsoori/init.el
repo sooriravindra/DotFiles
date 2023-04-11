@@ -7,15 +7,18 @@
 
 (setq-default custom-file (concat user-emacs-directory "custom-file.el")
 	      indent-tabs-mode nil
-	      create-lockfiles nil)
+	      create-lockfiles nil
+              frame-title-format '("%b"))
 
 ;; Set font size. This might need adjustment
 (set-face-attribute 'default nil :height 130)
 
 ;; Use y-or-n instead of yes-or-no
-(defalias 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(show-paren-mode 1)
 
 ;; Initialize package sources
 (require 'package)
@@ -57,26 +60,33 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
-;; ivy completion framework
-(use-package ivy
-  :config (ivy-mode 1))
+;; ;; ivy completion framework
+;; (use-package ivy
+;;   :config (ivy-mode 1))
+;; 
+;; ;; ivy enhanced versions of common Emacs commands
+;; (use-package counsel
+;;   :bind (("M-x" . counsel-M-x)
+;; 	 ("C-x b" . counsel-ibuffer)
+;; 	 ("C-x C-f" . counsel-find-file)
+;; 	 :map minibuffer-local-map
+;; 	 ("C-r" . 'counsel-minibuffer-history)))
+;; 
+;; ;; Better sorting for ivy
+;; (use-package ivy-prescient
+;;   :after counsel
+;;   :custom
+;;   (ivy-prescient-enable-filtering t)
+;;   :config
+;;   (prescient-persist-mode 1)
+;;   (ivy-prescient-mode 1))
 
-;; ivy enhanced versions of common Emacs commands
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
-
-;; Better sorting for ivy
-(use-package ivy-prescient
-  :after counsel
+(use-package vertico
+             :init (vertico-mode))
+(use-package orderless
   :custom
-  (ivy-prescient-enable-filtering t)
-  :config
-  (prescient-persist-mode 1)
-  (ivy-prescient-mode 1))
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; Pretty themes
 (use-package doom-themes
@@ -109,7 +119,8 @@
   :after evil
   :config (evil-collection-init))
 
-(use-package pulsar)
+(use-package beacon
+  :config (beacon-mode))
 
 (use-package which-key
   :defer 0

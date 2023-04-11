@@ -1,5 +1,16 @@
+(setq gc-cons-threshold (* 100 1000 1000))
+(add-hook 'after-init-hook #'(lambda ()
+                               ;; restore after startup
+                               (setq gc-cons-threshold (* 800 1000))))
+
+;; Measure time for startup
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (message "Emacs loaded in %s"
+		     (emacs-init-time))))
+
 ;; Default dark theme to make emacs dark until real dark theme is loaded
-(load-theme 'tango-dark)
+(load-theme 'wombat)
 
 ;; Display line numbers
 (global-display-line-numbers-mode t)
