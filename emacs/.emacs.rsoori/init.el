@@ -6,8 +6,8 @@
   (load (concat user-emacs-directory "early-init.el")))
 
 (setq-default custom-file (concat user-emacs-directory "custom-file.el")
-	      indent-tabs-mode nil
-	      create-lockfiles nil
+              indent-tabs-mode nil
+              create-lockfiles nil
               frame-title-format '("%b"))
 
 ;; Set font size. This might need adjustment
@@ -18,14 +18,24 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+;; With GPG 2.1+, this forces gpg-agent to use the Emacs minibuffer to prompt
+;; for the key passphrase.
+(defconst EMACS27+ (not (version< emacs-version "27")))
+(set (if EMACS27+
+         'epg-pinentry-mode
+       'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
+     'loopback)
+
 (show-paren-mode 1)
+
+(global-visual-line-mode t)
 
 ;; Initialize package sources
 (require 'package)
 
 ;; Enable obtaining packages from melpa and elpa devel (required for compat-28.x)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("elpa-devel" . "https://elpa.gnu.org/devel/")))
+                         ("elpa-devel" . "https://elpa.gnu.org/devel/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -47,9 +57,9 @@
 (use-package evil
   :init
   (setq evil-want-integration t
-	evil-want-keybinding nil
-	evil-want-C-u-scroll t
-	evil-want-C-i-jump nil)
+        evil-want-keybinding nil
+        evil-want-C-u-scroll t
+        evil-want-C-i-jump nil)
   :config (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
@@ -82,11 +92,20 @@
 ;;   (ivy-prescient-mode 1))
 
 (use-package vertico
-             :init (vertico-mode))
+  :init (vertico-mode))
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package savehist)
+
+(use-package marginalia
+  :bind
+  (:map minibuffer-local-map
+        ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
 
 ;; Pretty themes
 (use-package doom-themes
@@ -141,6 +160,13 @@
   (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+
+(if (eq system-type `gnu/linux)
+    (use-package vterm
+      :defer t))
+
+(use-package writeroom-mode
+  :defer t)
 
 ;; Load custom configuration
 (load-file custom-file)
