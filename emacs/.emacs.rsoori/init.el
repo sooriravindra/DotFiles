@@ -98,7 +98,8 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-(use-package savehist)
+(use-package savehist
+  :config (savehist-mode t))
 
 (use-package marginalia
   :bind
