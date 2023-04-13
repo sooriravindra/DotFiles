@@ -60,13 +60,12 @@
         evil-want-keybinding nil
         evil-want-C-u-scroll t
         evil-want-C-i-jump nil)
-  :config (evil-mode 1)
+  :config
+  (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-undo-system 'undo-redo)
-
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -93,6 +92,7 @@
 
 (use-package vertico
   :init (vertico-mode))
+
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
@@ -125,13 +125,10 @@
 ;; Better help
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-command helpful-key)
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
   :bind
-  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-function] . helpful-callable)
   ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-variable] . helpful-variable)
   ([remap describe-key] . helpful-key))
 
 ;; Morreee Vim
