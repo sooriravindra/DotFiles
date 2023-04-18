@@ -1,33 +1,36 @@
 ;; Author  : Raveendra Soori
 ;; Created : 7th April 2023
 
+;; Convenient constants to be used later
+(defconst EMACS27+ (not (version< emacs-version "27")))
+(defconst EMACS28+ (not (version< emacs-version "28")))
+
 ;; load early-init.el in earlier versions
-(when (version< emacs-version "27")
+(when (not EMACS27+)
   (load (concat user-emacs-directory "early-init.el")))
 
+;; Prevent emacs from adding custom config to init.el
 (setq-default custom-file (concat user-emacs-directory "custom-file.el")
+              native-comp-async-report-warnings-errors nil
               indent-tabs-mode nil
               create-lockfiles nil
-              frame-title-format '("%b"))
-
-;; Set font size. This might need adjustment
-(set-face-attribute 'default nil :height 130)
+              frame-title-format '("Evil Emacs - %b"))
 
 ;; Use y-or-n instead of yes-or-no
-(fset 'yes-or-no-p 'y-or-n-p)
+(if EMACS28+ (setq-default use-short-answers t) (fset 'yes-or-no-p 'y-or-n-p))
 
+;; Allow escape to be used for quit
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;; With GPG 2.1+, this forces gpg-agent to use the Emacs minibuffer to prompt
-;; for the key passphrase.
-(defconst EMACS27+ (not (version< emacs-version "27")))
-(set (if EMACS27+
-         'epg-pinentry-mode
+;; GPG key passphrase should be prompted in minibuffer
+(set (if EMACS27+ 'epg-pinentry-mode
        'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
      'loopback)
 
+;; Highlight matching bracket
 (show-paren-mode 1)
 
+;; Word wrap
 (global-visual-line-mode t)
 
 ;; Initialize package sources
@@ -37,6 +40,7 @@
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa-devel" . "https://elpa.gnu.org/devel/")))
 (package-initialize)
+
 (unless package-archive-contents
   (package-refresh-contents))
 
@@ -49,8 +53,13 @@
 ;; No need to ensure each package
 (setq use-package-always-ensure t)
 
+(use-package esup
+  :pin melpa
+  :config (setq esup-depth 0))
+
 ;; Show keystrokes in a buffer
 (use-package command-log-mode
+  :defer 2
   :commands command-log-mode)
 
 ;; Vim you shall
@@ -69,38 +78,25 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
-;; ;; ivy completion framework
-;; (use-package ivy
-;;   :config (ivy-mode 1))
-;; 
-;; ;; ivy enhanced versions of common Emacs commands
-;; (use-package counsel
-;;   :bind (("M-x" . counsel-M-x)
-;; 	 ("C-x b" . counsel-ibuffer)
-;; 	 ("C-x C-f" . counsel-find-file)
-;; 	 :map minibuffer-local-map
-;; 	 ("C-r" . 'counsel-minibuffer-history)))
-;; 
-;; ;; Better sorting for ivy
-;; (use-package ivy-prescient
-;;   :after counsel
-;;   :custom
-;;   (ivy-prescient-enable-filtering t)
-;;   :config
-;;   (prescient-persist-mode 1)
-;;   (ivy-prescient-mode 1))
+;; Save command history
+(use-package savehist
+  :config (savehist-mode t))
 
+;; Completion system
 (use-package vertico
-  :init (vertico-mode))
+  :init (vertico-mode)
+  :config (setq vertico-cycle t))
 
+;; Orderless completion style
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-(use-package savehist
-  :config (savehist-mode t))
+;; Commands that make use of completion
+(use-package consult)
 
+;; Add annotations to minibuffer completion
 (use-package marginalia
   :bind
   (:map minibuffer-local-map
@@ -108,15 +104,16 @@
   :init
   (marginalia-mode))
 
-;; Pretty themes
+;; Themes
 (use-package doom-themes
   :init (load-theme 'doom-dracula t))
 
 (use-package all-the-icons)
 
-;; Pretty mode-line
+;; Cool mode-line
 (use-package doom-modeline
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+  :config (setq doom-modeline-modal-icon nil)) ;; Let's use text
 
 ;; Apparently the best git interface
 (use-package magit
@@ -124,6 +121,7 @@
 
 ;; Better help
 (use-package helpful
+  :defer t
   :commands (helpful-callable helpful-variable helpful-command helpful-key)
   :bind
   ([remap describe-function] . helpful-callable)
@@ -137,10 +135,10 @@
   :config (evil-collection-init))
 
 (use-package beacon
+  :defer t
   :config (beacon-mode))
 
 (use-package which-key
-  :defer 0
   :config (which-key-mode))
 
 ;; Frame wide text scaling
@@ -159,12 +157,27 @@
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
+;; The most loved terminal in Emacs
 (if (eq system-type `gnu/linux)
     (use-package vterm
       :defer t))
 
+;; Distraction free writing
 (use-package writeroom-mode
   :defer t)
 
-;; Load custom configuration
+;; Handy command to restart
+(use-package restart-emacs
+  :defer t)
+
+;; Cat in the modeline
+(use-package nyan-mode
+  :defer t)
+
+;; Text completion framework
+(use-package company
+  :config (global-company-mode)
+  )
+
+;; Finally load the custom file
 (load-file custom-file)
