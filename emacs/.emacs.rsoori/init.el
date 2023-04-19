@@ -9,30 +9,6 @@
 (when (not EMACS27+)
   (load (concat user-emacs-directory "early-init.el")))
 
-;; Prevent emacs from adding custom config to init.el
-(setq-default custom-file (concat user-emacs-directory "custom-file.el")
-              native-comp-async-report-warnings-errors nil
-              indent-tabs-mode nil
-              create-lockfiles nil
-              frame-title-format '("Evil Emacs - %b"))
-
-;; Use y-or-n instead of yes-or-no
-(if EMACS28+ (setq-default use-short-answers t) (fset 'yes-or-no-p 'y-or-n-p))
-
-;; Allow escape to be used for quit
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; GPG key passphrase should be prompted in minibuffer
-(set (if EMACS27+ 'epg-pinentry-mode
-       'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
-     'loopback)
-
-;; Highlight matching bracket
-(show-paren-mode 1)
-
-;; Word wrap
-(global-visual-line-mode t)
-
 ;; Initialize package sources
 (require 'package)
 
@@ -50,10 +26,34 @@
 
 (require 'use-package)
 
-;; No need to ensure each package
-(setq use-package-always-ensure t)
+;; Club generic config here 
+(use-package emacs
+  :config
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  ;; C-u is used to scroll, use C-M-u as alternative for universal argument
+  (global-set-key (kbd "C-M-u") 'universal-argument)
+  (setq-default custom-file (concat user-emacs-directory "custom-file.el")
+                native-comp-async-report-warnings-errors nil
+                indent-tabs-mode nil
+                use-package-always-ensure t
+                create-lockfiles nil
+                make-backup-files nil
+                frame-title-format '("Evil Emacs - %b"))
+  ;; Use y/n instead of yes/no
+  (if EMACS28+ (setq-default use-short-answers t) (fset 'yes-or-no-p 'y-or-n-p))
+  ;; Prompt for Gpg password in minibuffer
+  (set (if EMACS27+ 'epg-pinentry-mode 'epa-pinentry-mode) 'loopback)
+  (show-paren-mode 1)
+  (global-visual-line-mode t))
 
+;; Keep things organized
+(use-package no-littering
+  :config (setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+;; Profiler
 (use-package esup
+  :defer t
   :pin melpa
   :config (setq esup-depth 0))
 
@@ -75,6 +75,7 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-undo-system 'undo-redo)
+  (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -94,7 +95,8 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; Commands that make use of completion
-(use-package consult)
+(use-package consult
+  :defer t)
 
 ;; Add annotations to minibuffer completion
 (use-package marginalia
@@ -134,10 +136,11 @@
   :after evil
   :config (evil-collection-init))
 
+;; Highlight cursor
 (use-package beacon
-  :defer t
-  :config (beacon-mode))
+  :defer t)
 
+;; Show possible keys and bindings
 (use-package which-key
   :config (which-key-mode))
 
@@ -176,8 +179,20 @@
 
 ;; Text completion framework
 (use-package company
-  :config (global-company-mode)
-  )
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+              ("<return>" . nil)
+              ("RET" . nil)
+              ("<tab>" . company-complete-selection)))
+
+;; Fancier bullets for org mode
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(use-package org-roam-ui
+  :defer t)
 
 ;; Finally load the custom file
 (load-file custom-file)
