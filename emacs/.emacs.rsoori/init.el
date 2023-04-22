@@ -37,8 +37,16 @@
                 indent-tabs-mode nil
                 use-package-always-ensure t
                 create-lockfiles nil
-                make-backup-files nil
+                visible-bell t
                 frame-title-format '("Evil Emacs - %b"))
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  vterm-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
   ;; Use y/n instead of yes/no
   (if EMACS28+ (setq-default use-short-answers t) (fset 'yes-or-no-p 'y-or-n-p))
   ;; Prompt for Gpg password in minibuffer
@@ -49,7 +57,7 @@
 ;; Keep things organized
 (use-package no-littering
   :config (setq auto-save-file-name-transforms
-      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+                `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;; Profiler
 (use-package esup
@@ -161,12 +169,16 @@
   (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 ;; The most loved terminal in Emacs
-(if (eq system-type `gnu/linux)
-    (use-package vterm
-      :defer t))
+(use-package vterm
+  :if (eq system-type `gnu/linux)
+  :defer t)
+
+;; Hide modeline
+(use-package hide-mode-line
+  :defer t)
 
 ;; Distraction free writing
-(use-package writeroom-mode
+(use-package olivetti
   :defer t)
 
 ;; Handy command to restart
@@ -191,8 +203,38 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+;; UI for org-roam mode
 (use-package org-roam-ui
   :defer t)
+
+;; Custom functions
+
+(defun rsoori/zen-mode--get-mode-var (mode)
+  "Returns t if MODE is set to non-nil else returns -1"
+  (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
+
+(defun rsoori/zen-mode ()
+  "Zen mode for intense focus"
+  (interactive)
+  (if (and (boundp 'rsoori/zen-mode)
+           (eq rsoori/zen-mode 1))
+      (progn
+        (display-line-numbers-mode rsoori/zen-mode-restore-line-num)
+        (hide-mode-line-mode rsoori/zen-mode-restore-mode-line)
+        (olivetti-mode -1)
+        (setq rsoori/zen-mode 0))
+    (progn
+      (make-local-variable 'rsoori/zen-mode)
+      (make-local-variable 'rsoori/zen-mode-restore-line-num)
+      (make-local-variable 'rsoori/zen-mode-restore-mode-line)
+      (setq rsoori/zen-mode-restore-line-num
+            (rsoori/zen-mode--get-mode-var 'display-line-numbers-mode))
+      (setq rsoori/zen-mode-restore-mode-line
+            (rsoori/zen-mode--get-mode-var 'hide-mode-line-mode))
+      (display-line-numbers-mode 0)
+      (hide-mode-line-mode t)
+      (olivetti-mode t)
+      (setq rsoori/zen-mode 1))))
 
 ;; Finally load the custom file
 (load-file custom-file)
