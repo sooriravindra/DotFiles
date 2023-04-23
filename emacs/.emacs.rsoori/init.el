@@ -104,6 +104,13 @@
 
 ;; Commands that make use of completion
 (use-package consult
+  :init
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
   :defer t)
 
 ;; Add annotations to minibuffer completion
@@ -143,6 +150,18 @@
 (use-package evil-collection
   :after evil
   :config (evil-collection-init))
+
+;; Snipe 'em
+(use-package evil-snipe
+  :config (evil-snipe-mode 1))
+
+;; Commenting
+(use-package evil-commentary
+  :config (evil-commentary-mode 1))
+
+;; Use gs to make jumps
+(use-package evil-easymotion
+  :config (evilem-default-keybindings "gs"))
 
 ;; Highlight cursor
 (use-package beacon
@@ -209,32 +228,30 @@
 
 ;; Custom functions
 
-(defun rsoori/zen-mode--get-mode-var (mode)
+(defun rsoori/zen--get-mode-state (mode)
   "Returns t if MODE is set to non-nil else returns -1"
   (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
 
-(defun rsoori/zen-mode ()
-  "Zen mode for intense focus"
+(defun rsoori/toggle-zen ()
+  "Zen for intense focus"
   (interactive)
-  (if (and (boundp 'rsoori/zen-mode)
-           (eq rsoori/zen-mode 1))
+  (if (boundp 'rsoori/zen-restore-line-num) ;; Use this to determine if zen is on
       (progn
-        (display-line-numbers-mode rsoori/zen-mode-restore-line-num)
-        (hide-mode-line-mode rsoori/zen-mode-restore-mode-line)
+        (display-line-numbers-mode rsoori/zen-restore-line-num)
+        (hide-mode-line-mode rsoori/zen-restore-mode-line)
         (olivetti-mode -1)
-        (setq rsoori/zen-mode 0))
+        (kill-local-variable 'rsoori/zen-restore-line-num)
+        (kill-local-variable 'rsoori/zen-restore-mode-line))
     (progn
-      (make-local-variable 'rsoori/zen-mode)
-      (make-local-variable 'rsoori/zen-mode-restore-line-num)
-      (make-local-variable 'rsoori/zen-mode-restore-mode-line)
-      (setq rsoori/zen-mode-restore-line-num
-            (rsoori/zen-mode--get-mode-var 'display-line-numbers-mode))
-      (setq rsoori/zen-mode-restore-mode-line
-            (rsoori/zen-mode--get-mode-var 'hide-mode-line-mode))
+      (make-local-variable 'rsoori/zen-restore-line-num)
+      (make-local-variable 'rsoori/zen-restore-mode-line)
+      (setq rsoori/zen-restore-line-num
+            (rsoori/zen--get-mode-state 'display-line-numbers-mode))
+      (setq rsoori/zen-restore-mode-line
+            (rsoori/zen--get-mode-state 'hide-mode-line-mode))
       (display-line-numbers-mode 0)
       (hide-mode-line-mode t)
-      (olivetti-mode t)
-      (setq rsoori/zen-mode 1))))
+      (olivetti-mode t))))
 
 ;; Finally load the custom file
 (load-file custom-file)
