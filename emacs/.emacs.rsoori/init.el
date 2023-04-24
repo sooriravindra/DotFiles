@@ -59,6 +59,21 @@
   :config (setq auto-save-file-name-transforms
                 `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
+;; Org mode
+(use-package org
+  :config
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.2)
+                  (org-level-3 . 1.1)
+                  (org-level-4 . 1.05)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+  (setq org-hide-emphasis-markers t)
+  :defer t)
+
 ;; Profiler
 (use-package esup
   :defer t
@@ -232,26 +247,30 @@
   "Returns t if MODE is set to non-nil else returns -1"
   (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
 
-(defun rsoori/toggle-zen ()
+(defun rsoori/toggle-zen (&optional arg)
   "Zen for intense focus"
-  (interactive)
-  (if (boundp 'rsoori/zen-restore-line-num) ;; Use this to determine if zen is on
-      (progn
-        (display-line-numbers-mode rsoori/zen-restore-line-num)
-        (hide-mode-line-mode rsoori/zen-restore-mode-line)
-        (olivetti-mode -1)
-        (kill-local-variable 'rsoori/zen-restore-line-num)
-        (kill-local-variable 'rsoori/zen-restore-mode-line))
-    (progn
-      (make-local-variable 'rsoori/zen-restore-line-num)
-      (make-local-variable 'rsoori/zen-restore-mode-line)
-      (setq rsoori/zen-restore-line-num
-            (rsoori/zen--get-mode-state 'display-line-numbers-mode))
-      (setq rsoori/zen-restore-mode-line
-            (rsoori/zen--get-mode-state 'hide-mode-line-mode))
-      (display-line-numbers-mode 0)
-      (hide-mode-line-mode t)
-      (olivetti-mode t))))
+  (interactive "P")
+  (let ((arg (or arg 0)))
+    (if (and (<= arg 0) (boundp 'rsoori/zen-restore-line-num)) ;; Use this to determine if zen is on
+        (progn
+          (display-line-numbers-mode rsoori/zen-restore-line-num)
+          (hide-mode-line-mode rsoori/zen-restore-mode-line)
+          (olivetti-mode -1)
+          (kill-local-variable 'rsoori/zen-restore-line-num)
+          (kill-local-variable 'rsoori/zen-restore-mode-line))
+      (if (and (not (boundp 'rsoori/zen-restore-line-num))
+               (not (boundp 'rsoori/zen-restore-mode-line))
+               (>= arg 0))
+          (progn
+            (make-local-variable 'rsoori/zen-restore-line-num)
+            (setq rsoori/zen-restore-line-num
+                  (rsoori/zen--get-mode-state 'display-line-numbers-mode))
+            (make-local-variable 'rsoori/zen-restore-mode-line)
+            (setq rsoori/zen-restore-mode-line
+                  (rsoori/zen--get-mode-state 'hide-mode-line-mode))
+            (display-line-numbers-mode 0)
+            (hide-mode-line-mode t)
+            (olivetti-mode t))))))
 
 ;; Finally load the custom file
 (load-file custom-file)
