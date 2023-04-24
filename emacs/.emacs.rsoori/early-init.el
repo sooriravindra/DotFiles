@@ -1,3 +1,4 @@
+;; Garbage collector trick to speed up init
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 (add-hook 'after-init-hook #'(lambda ()
@@ -14,10 +15,14 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+;; Preventing frame resize saves some time
 (setq frame-inhibit-implied-resize t)
 
 ;; Set font size and dracula theme's bg color to prevent flicker
-(set-face-attribute 'default nil :background "#282a36" :height 200)
+(set-face-attribute 'default nil
+                    :foreground "#ffffff"
+                    :background "#282a36"
+                    :height 200)
 
 ;; Display line numbers
 (global-display-line-numbers-mode t)
