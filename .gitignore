@@ -1,0 +1,3 @@
+emacs/.emacs.rsoori/*
+!emacs/.emacs.rsoori/init.el
+!emacs/.emacs.rsoori/early-init.el
