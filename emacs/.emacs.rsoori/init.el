@@ -38,10 +38,10 @@
                 use-package-always-ensure t
                 create-lockfiles nil
                 visible-bell t
+                make-backup-files nil
                 frame-title-format '("Evil Emacs - %b"))
   ;; Disable line numbers for some modes
-  (dolist (mode '(org-mode-hook
-                  term-mode-hook
+  (dolist (mode '(term-mode-hook
                   vterm-mode-hook
                   shell-mode-hook
                   treemacs-mode-hook
@@ -59,7 +59,7 @@
   :config (setq auto-save-file-name-transforms
                 `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
-;; Org mode
+;; org-mode
 (use-package org
   :config
   (dolist (face '((org-level-1 . 1.4)
@@ -72,6 +72,7 @@
                   (org-level-8 . 1.0)))
     (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
   (setq org-hide-emphasis-markers t)
+  :hook (org-mode . org-indent-mode)
   :defer t)
 
 ;; Profiler
@@ -90,8 +91,7 @@
   :init
   (setq evil-want-integration t
         evil-want-keybinding nil
-        evil-want-C-u-scroll t
-        evil-want-C-i-jump nil)
+        evil-want-C-u-scroll t)
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
