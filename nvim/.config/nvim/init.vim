@@ -244,7 +244,7 @@ autocmd VimEnter * :call VimLocalInit()
 " =======================================================================
 
 " Run the following to install Plug:
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+" curl -fLo  "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
 " https://raw.github.com/junegunn/vim-plug/master/plug.vim
 
 call plug#begin('~/.vim/plugged')
