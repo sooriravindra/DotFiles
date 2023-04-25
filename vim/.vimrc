@@ -114,7 +114,13 @@ vnoremap <C-p> "+gP
 " which was set
 command! -bar -nargs=1 Grep silent grep <q-args> | redraw! | cw
 
-if v:version > 800
+if exists('$TMUX')
+    let g:tmux_send_cmd=":silent !tmux send-keys -t 1 'clear' C-m ; "
+    let g:tmux_send_cmd.="tmux send-keys -t 1 'type compile_cmd && compile_cmd && date' C-m"
+
+    " Smake shall send keys to pane 1 in tmux, TODO should this be better?
+    command! Smake execute g:tmux_send_cmd | execute ':redraw!'
+elseif v:version > 800
     " If higher than vim8 use the inbuilt terminal
     function! SideRun()
         only
