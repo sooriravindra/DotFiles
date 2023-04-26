@@ -63,10 +63,11 @@
 ;; org-mode
 (use-package org
   :config
-  (dolist (face '((org-level-1 . 1.4)
-                  (org-level-2 . 1.2)
-                  (org-level-3 . 1.1)
-                  (org-level-4 . 1.05)
+  (dolist (face '((org-document-title . 1.8)
+                  (org-level-1 . 1.5)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
                   (org-level-5 . 1.0)
                   (org-level-6 . 1.0)
                   (org-level-7 . 1.0)
@@ -251,6 +252,9 @@
 
 ;; Still editing vim config files?
 (use-package vimrc-mode
+  :defer t)
+
+(use-package fzf
   :defer t)
 
 ;; Custom functions

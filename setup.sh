@@ -30,6 +30,7 @@ done
 
 confirm_action "Install Plug for Vim?" "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim"
 confirm_action "Install Vim plugins now?" "vim +PlugInstall +qall"
+confirm_action "Install Emacs packages now?" "emacs --eval=\"(kill-emacs)\""
 echo ""
 echo ""
 echo "========================================="
