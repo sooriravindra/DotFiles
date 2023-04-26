@@ -39,6 +39,7 @@
                 create-lockfiles nil
                 visible-bell t
                 make-backup-files nil
+                confirm-kill-emacs #'y-or-n-p
                 frame-title-format '("Evil Emacs - %b"))
   ;; Disable line numbers for some modes
   (dolist (mode '(term-mode-hook
@@ -239,6 +240,17 @@
 
 ;; UI for org-roam mode
 (use-package org-roam-ui
+  :defer t)
+
+;; Fuzzy finder
+(use-package affe
+  :init
+  (setq affe-find-command "rg --color=never --no-ignore --hidden --files")
+  (setq affe-grep-command "rg --null --color=never --max-columns=1000 --no-heading --line-number --no-ignore --hidden -v ^$")
+  :defer t)
+
+;; Still editing vim config files?
+(use-package vimrc-mode
   :defer t)
 
 ;; Custom functions
