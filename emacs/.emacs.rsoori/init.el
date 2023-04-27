@@ -166,7 +166,7 @@
 
 ;; Morreee Vim
 (use-package evil-collection
-  :after evil
+  :after (evil magit)
   :config (evil-collection-init))
 
 ;; Snipe 'em
