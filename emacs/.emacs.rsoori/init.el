@@ -289,6 +289,7 @@
     (kbd "<leader> bw") '("Kill buffer"      . kill-buffer)
     (kbd "<leader> bn") '("Next buffer"      . evil-next-buffer)
     (kbd "<leader> bp") '("Prev buffer"      . evil-prev-buffer)
+    (kbd "<leader> bl") '("Last buffer"      . evil-switch-to-windows-last-buffer)
     ;; w
     (kbd "<leader> wo") '("Only window"      . delete-other-windows)
     (kbd "<leader> wq") '("Close window"     . evil-quit)
@@ -307,10 +308,7 @@
     (kbd "<leader> gj") '("Next git hunk"    . git-gutter:next-hunk)
     (kbd "<leader> gk") '("Prev git hunk"    . git-gutter:previous-hunk)
     ;; h
-    (kbd "<leader> hf") '("Describe function" . describe-function)
-    (kbd "<leader> hv") '("Describe variable" . describe-variable)
-    (kbd "<leader> hk") '("Describe key" . describe-key)
-    (kbd "<leader> hi") '("Info" . info)
+    (kbd "<leader> h") '("+Help" . (lambda () (interactive) (rsoori/gen-input "C-h")))
     )
 
   (rsoori/which-key-edit-key-text
@@ -320,6 +318,11 @@
   )
 
 ;; Custom functions
+
+(defun rsoori/gen-input(KEYS)
+  "Generates the input key sequence KEYS. KEYS must be kbd compatible string."
+  (interactive)
+  (setq  unread-command-events (nconc (listify-key-sequence (kbd KEYS)) unread-command-events)))
 
 (defun rsoori/zen--get-mode-state (mode)
   "Returns t if MODE is set to non-nil else returns -1"
