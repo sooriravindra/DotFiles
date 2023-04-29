@@ -145,12 +145,8 @@
 (use-package doom-themes
   :init (load-theme 'doom-dracula t))
 
-(use-package all-the-icons)
-
-;; Cool mode-line
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :config (setq doom-modeline-modal-icon nil)) ;; Let's use text
+(use-package all-the-icons
+  :defer t)
 
 ;; Apparently the best git interface
 (use-package magit
@@ -353,6 +349,40 @@
             (display-line-numbers-mode 0)
             (hide-mode-line-mode t)
             (olivetti-mode t))))))
+
+(defun rsoori/mode-line-format (left right)
+  "Return a string of `window-width' length.
+Containing LEFT, and RIGHT aligned respectively."
+  (let ((available-width (- (window-width) (length left) 1)))
+    (format (format "%%s %%%ds " available-width) left right)))
+
+(use-package emacs ;; modeline
+  :init
+  (defface evil-mode-line-face '((t (:foreground  "black"
+                                                  :background "orange")))
+    "Face for evil mode-line colors.")
+
+  (setq-default
+   mode-line-format
+   '((:eval (rsoori/mode-line-format
+             ;; left portion
+             (format-mode-line
+              (quote ("%e"
+                      (:eval
+                       (when (bound-and-true-p evil-local-mode)
+                         (propertize
+                          (concat
+                           " "
+                           (upcase
+                            (substring (symbol-name evil-state) 0 1))
+                           (substring (symbol-name evil-state) 1)
+                           " ") 'face 'evil-mode-line-face)))
+                      " " (:eval (when (buffer-modified-p) "[+]"))
+                      " " mode-line-buffer-identification
+                      " %l:%c")))
+             ;; right portion
+             (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
+  )
 
 ;; Finally load the custom file
 (when (file-exists-p custom-file)
