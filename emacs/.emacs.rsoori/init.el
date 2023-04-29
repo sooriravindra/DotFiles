@@ -40,6 +40,7 @@
                 visible-bell t
                 make-backup-files nil
                 confirm-kill-emacs #'y-or-n-p
+                find-file-visit-truename t
                 frame-title-format '("Evil Emacs - %b"))
   ;; Disable line numbers for some modes
   (dolist (mode '(term-mode-hook
@@ -103,7 +104,8 @@
   (evil-set-undo-system 'undo-redo)
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  (evil-ex-define-cmd "smile" '(lambda () (interactive) (message ":D"))))
 
 ;; Save command history
 (use-package savehist
@@ -266,17 +268,11 @@
   (evil-set-leader nil (kbd "C-SPC"))
   ;; In addition, make <space> leader in normal mode
   (evil-set-leader 'normal (kbd "SPC"))
+  (evil-set-leader 'visual (kbd "SPC"))
   ;; Local leader is <leader> m
   (evil-set-leader nil (kbd "<leader> m") t)
 
   ;; Helper functions to update which-key text
-  (defun rsoori/which-key-edit-key-text (&rest bindings)
-    "Use BINDINGS to update the which-key replacement text for the keybinding. The bindings are successive strings in pairs."
-    (while bindings
-      (let ((key (pop bindings))
-            (msg (pop bindings)))
-        (which-key-add-key-based-replacements (concat "SPC " key) msg)
-        (which-key-add-key-based-replacements (concat "C-SPC " key) msg))))
 
   ;; Here are all the leader key bindings
   (evil-define-key nil 'global
@@ -293,8 +289,8 @@
     ;; w
     (kbd "<leader> wo") '("Only window"      . delete-other-windows)
     (kbd "<leader> wq") '("Close window"     . evil-quit)
-    (kbd "<leader> ww") '("Next window"      . delete-other-windows)
-    (kbd "<leader> wW") '("Prev window"      . delete-other-windows)
+    (kbd "<leader> ww") '("Next window"      . evil-window-next)
+    (kbd "<leader> wW") '("Prev window"      . evil-window-prev)
     (kbd "<leader> wh") '("Window left"      . evil-window-left)
     (kbd "<leader> wj") '("Window down"      . evil-window-down)
     (kbd "<leader> wk") '("Window up"        . evil-window-up)
@@ -308,10 +304,15 @@
     (kbd "<leader> gj") '("Next git hunk"    . git-gutter:next-hunk)
     (kbd "<leader> gk") '("Prev git hunk"    . git-gutter:previous-hunk)
     ;; h
-    (kbd "<leader> h") '("+Help" . (lambda () (interactive) (rsoori/gen-input "C-h")))
+    (kbd "<leader> h") '("+Help"             . (lambda () (interactive) (rsoori/gen-input "C-h")))
     )
 
-  (rsoori/which-key-edit-key-text
+  ((lambda (&rest bindings)
+     (while bindings
+       (let ((key (pop bindings))
+             (msg (pop bindings)))
+         (which-key-add-key-based-replacements (concat "SPC " key) msg)
+         (which-key-add-key-based-replacements (concat "C-SPC " key) msg))))
    "b"    "Buffer/Bookmark"
    "w"    "Window"
    "g"    "Git")
@@ -354,4 +355,5 @@
             (olivetti-mode t))))))
 
 ;; Finally load the custom file
-(load-file custom-file)
+(when (file-exists-p custom-file)
+  (load-file custom-file))
