@@ -87,7 +87,7 @@
 
 ;; Show keystrokes in a buffer
 (use-package command-log-mode
-  :defer 2
+  :defer t
   :commands command-log-mode)
 
 ;; Vim you shall
@@ -106,6 +106,9 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal)
   (evil-ex-define-cmd "smile" '(lambda () (interactive) (message ":D"))))
+
+(use-package async
+  :defer t)
 
 ;; Save command history
 (use-package savehist
@@ -164,7 +167,7 @@
 
 ;; Morreee Vim
 (use-package evil-collection
-  :after (evil magit)
+  :after evil
   :config (evil-collection-init))
 
 ;; Snipe 'em
@@ -387,12 +390,12 @@ Containing LEFT, and RIGHT aligned respectively."
              ;; right portion
              (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
 
-  ;; *Messages* buffer seems to startup before the above customization
-  ;; So we manually update it. Alternatively we could iterate through each
-  ;; buffer and run below code.
-  (with-current-buffer "*Messages*"
-    (setq mode-line-format
-          (default-value 'mode-line-format)))
+  ;; Some buffers such as *Message* seem to startup early
+  ;; So go through the buffer-list and update mode-line-format 
+  (dolist (buffer (buffer-list))
+    (with-current-buffer "*Messages*"
+      (setq mode-line-format
+            (default-value 'mode-line-format))))
   )
 
 ;; Finally load the custom file
