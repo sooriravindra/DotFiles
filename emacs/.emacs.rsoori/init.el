@@ -370,18 +370,29 @@ Containing LEFT, and RIGHT aligned respectively."
               (quote ("%e"
                       (:eval
                        (when (bound-and-true-p evil-local-mode)
-                         (propertize
-                          (concat
-                           " "
-                           (upcase
-                            (substring (symbol-name evil-state) 0 1))
-                           (substring (symbol-name evil-state) 1)
-                           " ") 'face 'evil-mode-line-face)))
+                         (let ((formatted-evil-state
+                                (concat
+                                 " "
+                                 (upcase
+                                  (substring (symbol-name evil-state) 0 1))
+                                 (substring (symbol-name evil-state) 1)
+                                 " "))) ;; normal -> Normal
+                           (if (mode-line-window-selected-p)
+                               (propertize formatted-evil-state
+                                           'face 'evil-mode-line-face)
+                             (propertize formatted-evil-state)))))
                       " " (:eval (when (buffer-modified-p) "[+]"))
                       " " mode-line-buffer-identification
                       " %l:%c")))
              ;; right portion
              (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
+
+  ;; *Messages* buffer seems to startup before the above customization
+  ;; So we manually update it. Alternatively we could iterate through each
+  ;; buffer and run below code.
+  (with-current-buffer "*Messages*"
+    (setq mode-line-format
+          (default-value 'mode-line-format)))
   )
 
 ;; Finally load the custom file
