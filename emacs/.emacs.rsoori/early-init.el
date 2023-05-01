@@ -38,3 +38,38 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (tooltip-mode -1)
+
+(defun rsoori/mode-line-format (left right)
+  "Return a string of `window-width' length.
+Containing LEFT, and RIGHT aligned respectively."
+  (let ((available-width (- (window-width) (length left) 1)))
+    (format (format "%%s %%%ds " available-width) left right)))
+
+(defface evil-mode-line-face '((t (:foreground  "black"
+                                                :background "orange")))
+  "Face for evil state in mode-line.")
+
+(setq-default
+ mode-line-format
+ '((:eval (rsoori/mode-line-format
+           ;; left portion
+           (format-mode-line
+            (quote ("%e"
+                    (:eval
+                     (when (bound-and-true-p evil-local-mode)
+                       (let ((formatted-evil-state
+                              (concat
+                               " "
+                               (upcase
+                                (substring (symbol-name evil-state) 0 1))
+                               (substring (symbol-name evil-state) 1)
+                               " "))) ;; normal -> Normal
+                         (if (mode-line-window-selected-p)
+                             (propertize formatted-evil-state
+                                         'face 'evil-mode-line-face)
+                           (propertize formatted-evil-state)))))
+                    " " (:eval (when (buffer-modified-p) "[+]"))
+                    " " mode-line-buffer-identification
+                    " %l:%c")))
+           ;; right portion
+           (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))

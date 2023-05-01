@@ -353,51 +353,6 @@
             (hide-mode-line-mode t)
             (olivetti-mode t))))))
 
-(defun rsoori/mode-line-format (left right)
-  "Return a string of `window-width' length.
-Containing LEFT, and RIGHT aligned respectively."
-  (let ((available-width (- (window-width) (length left) 1)))
-    (format (format "%%s %%%ds " available-width) left right)))
-
-(use-package emacs ;; modeline
-  :init
-  (defface evil-mode-line-face '((t (:foreground  "black"
-                                                  :background "orange")))
-    "Face for evil mode-line colors.")
-
-  (setq-default
-   mode-line-format
-   '((:eval (rsoori/mode-line-format
-             ;; left portion
-             (format-mode-line
-              (quote ("%e"
-                      (:eval
-                       (when (bound-and-true-p evil-local-mode)
-                         (let ((formatted-evil-state
-                                (concat
-                                 " "
-                                 (upcase
-                                  (substring (symbol-name evil-state) 0 1))
-                                 (substring (symbol-name evil-state) 1)
-                                 " "))) ;; normal -> Normal
-                           (if (mode-line-window-selected-p)
-                               (propertize formatted-evil-state
-                                           'face 'evil-mode-line-face)
-                             (propertize formatted-evil-state)))))
-                      " " (:eval (when (buffer-modified-p) "[+]"))
-                      " " mode-line-buffer-identification
-                      " %l:%c")))
-             ;; right portion
-             (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
-
-  ;; Some buffers such as *Message* seem to startup early
-  ;; So go through the buffer-list and update mode-line-format 
-  (dolist (buffer (buffer-list))
-    (with-current-buffer "*Messages*"
-      (setq mode-line-format
-            (default-value 'mode-line-format))))
-  )
-
 ;; Finally load the custom file
 (when (file-exists-p custom-file)
   (load-file custom-file))
