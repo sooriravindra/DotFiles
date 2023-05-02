@@ -64,7 +64,8 @@ Containing LEFT, and RIGHT aligned respectively."
                                 (substring (symbol-name evil-state) 0 1))
                                (substring (symbol-name evil-state) 1)
                                " "))) ;; normal -> Normal
-                         (if (mode-line-window-selected-p)
+                         (if (and (fboundp 'mode-line-window-selected-p)
+                                  (mode-line-window-selected-p))
                              (propertize formatted-evil-state
                                          'face 'evil-mode-line-face)
                            (propertize formatted-evil-state)))))
