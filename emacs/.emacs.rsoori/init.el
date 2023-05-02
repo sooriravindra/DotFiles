@@ -322,7 +322,9 @@
 ;; Load leader key bindings
 (unless (file-exists-p bindings-file)
   (find-file bindings-source-file)
+  (setq org-confirm-babel-evaluate nil)
   (org-babel-execute-buffer)
+  (setq org-confirm-babel-evaluate t)
   (set-buffer-modified-p nil)
   (kill-current-buffer))
 

@@ -22,6 +22,12 @@ The table below is used to generate the leader key bindings.
 | gj  | git-gutter:next-hunk               | Next git hunk          |
 | gk  | git-gutter:previous-hunk           | Prev git hunk          |
 | h   | rs/help                            | +Help                  |
+| r   |                                    | Org-roam               |
+| rf  | org-roam-node-find                 | Find node              |
+| ri  | org-roam-node-insert               | Insert node            |
+| rs  | org-roam-db-sync                   | DB sync                |
+| rl  | org-roam-update-org-id-locations   | Update roam org id     |
+| ru  | org-roam-ui-mode                   | Org roam ui            |
 | w   |                                    | Window                 |
 | wo  | delete-other-windows               | Only window            |
 | wq  | evil-quit                          | Close window           |
