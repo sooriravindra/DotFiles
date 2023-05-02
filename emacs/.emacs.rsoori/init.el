@@ -34,6 +34,8 @@
   (global-set-key (kbd "C-M-u") 'universal-argument)
   (setq-default custom-file (concat user-emacs-directory "custom-file.el")
                 bindings-file (concat user-emacs-directory "bindings.el")
+                bindings-source-file
+                (concat user-emacs-directory "bindings.org")
                 native-comp-async-report-warnings-errors nil
                 indent-tabs-mode nil
                 use-package-always-ensure t
@@ -318,8 +320,13 @@
             (olivetti-mode t))))))
 
 ;; Load leader key bindings
-(when (file-exists-p bindings-file)
-  (load-file bindings-file))
+(unless (file-exists-p bindings-file)
+  (find-file bindings-source-file)
+  (org-babel-execute-buffer)
+  (set-buffer-modified-p nil)
+  (kill-current-buffer))
+
+(load-file bindings-file)
 
 ;; Finally load the custom file
 (when (file-exists-p custom-file)
