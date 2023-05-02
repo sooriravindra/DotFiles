@@ -33,6 +33,7 @@
   ;; C-u is used to scroll, use C-M-u as alternative for universal argument
   (global-set-key (kbd "C-M-u") 'universal-argument)
   (setq-default custom-file (concat user-emacs-directory "custom-file.el")
+                bindings-file (concat user-emacs-directory "bindings.el")
                 native-comp-async-report-warnings-errors nil
                 indent-tabs-mode nil
                 use-package-always-ensure t
@@ -105,6 +106,13 @@
   (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal)
+  ;; Make <ctrl><space> leader in all modes
+  (evil-set-leader nil (kbd "C-SPC"))
+  ;; In addition, make <space> leader in normal and visual mode.
+  (evil-set-leader 'normal (kbd "SPC"))
+  (evil-set-leader 'visual (kbd "SPC"))
+  ;; Local leader is <leader> m
+  (evil-set-leader nil (kbd "<leader> m") t)
   (evil-ex-define-cmd "smile" '(lambda () (interactive) (message ":D"))))
 
 (use-package async
@@ -117,7 +125,15 @@
 ;; Completion system
 (use-package vertico
   :init (vertico-mode)
-  :config (setq vertico-cycle t))
+  :config
+  (setq vertico-posframe-parameters
+        '((left-fringe . 20)
+          (right-fringe . 20)))
+  (setq vertico-cycle t))
+
+;; Display vertico in posframe
+(use-package vertico-posframe
+  :config (vertico-posframe-mode 1))
 
 ;; Orderless completion style
 (use-package orderless
@@ -260,98 +276,50 @@
 (use-package fzf
   :defer t)
 
-;; Leader key bindings
-(use-package evil
-  :config
-  ;; Make <ctrl><space> leader in all modes
-  (evil-set-leader nil (kbd "C-SPC"))
-  ;; In addition, make <space> leader in normal mode
-  (evil-set-leader 'normal (kbd "SPC"))
-  (evil-set-leader 'visual (kbd "SPC"))
-  ;; Local leader is <leader> m
-  (evil-set-leader nil (kbd "<leader> m") t)
-
-  ;; Helper functions to update which-key text
-
-  ;; Here are all the leader key bindings
-  (evil-define-key nil 'global
-    (kbd "<leader> ;")  '("M-x"              . execute-extended-command)
-    (kbd "<leader> :")  '("Eval expression"  . pp-eval-expression)
-    (kbd "<leader> /")  '("Commentary"       . evil-commentary-line)
-    ;; b
-    (kbd "<leader> bb") '("Switch to buffer/bookmark" . consult-buffer)
-    (kbd "<leader> bm") '("Set bookmark"     . bookmark-set)
-    (kbd "<leader> bw") '("Kill buffer"      . kill-buffer)
-    (kbd "<leader> bn") '("Next buffer"      . evil-next-buffer)
-    (kbd "<leader> bp") '("Prev buffer"      . evil-prev-buffer)
-    (kbd "<leader> bl") '("Last buffer"      . evil-switch-to-windows-last-buffer)
-    ;; w
-    (kbd "<leader> wo") '("Only window"      . delete-other-windows)
-    (kbd "<leader> wq") '("Close window"     . evil-quit)
-    (kbd "<leader> ww") '("Next window"      . evil-window-next)
-    (kbd "<leader> wW") '("Prev window"      . evil-window-prev)
-    (kbd "<leader> wh") '("Window left"      . evil-window-left)
-    (kbd "<leader> wj") '("Window down"      . evil-window-down)
-    (kbd "<leader> wk") '("Window up"        . evil-window-up)
-    (kbd "<leader> wl") '("Window right"     . evil-window-right)
-    (kbd "<leader> ws") '("Horizontal split" . evil-window-split)
-    (kbd "<leader> wv") '("Vertical split"   . evil-window-vsplit)
-    (kbd "<leader> wu") '("Winner undo"      . winner-undo)
-    (kbd "<leader> wU") '("Winner redo"      . winner-redo)
-    ;; g
-    (kbd "<leader> gg") '("Magit status"     . magit-status)
-    (kbd "<leader> gj") '("Next git hunk"    . git-gutter:next-hunk)
-    (kbd "<leader> gk") '("Prev git hunk"    . git-gutter:previous-hunk)
-    ;; h
-    (kbd "<leader> h") '("+Help"             . (lambda () (interactive) (rsoori/gen-input "C-h")))
-    )
-
-  ((lambda (&rest bindings)
-     (while bindings
-       (let ((key (pop bindings))
-             (msg (pop bindings)))
-         (which-key-add-key-based-replacements (concat "SPC " key) msg)
-         (which-key-add-key-based-replacements (concat "C-SPC " key) msg))))
-   "b"    "Buffer/Bookmark"
-   "w"    "Window"
-   "g"    "Git")
-  )
 
 ;; Custom functions
 
-(defun rsoori/gen-input(KEYS)
+(defun rs/gen-input(KEYS)
   "Generates the input key sequence KEYS. KEYS must be kbd compatible string."
   (interactive)
   (setq  unread-command-events (nconc (listify-key-sequence (kbd KEYS)) unread-command-events)))
 
-(defun rsoori/zen--get-mode-state (mode)
+(defun rs/help ()
+  (interactive)
+  (rs/gen-input "C-h"))
+
+(defun rs/zen--get-mode-state (mode)
   "Returns t if MODE is set to non-nil else returns -1"
   (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
 
-(defun rsoori/toggle-zen (&optional arg)
+(defun rs/toggle-zen (&optional arg)
   "Zen for intense focus"
   (interactive "P")
   (let ((arg (or arg 0)))
-    (if (and (<= arg 0) (boundp 'rsoori/zen-restore-line-num)) ;; Use this to determine if zen is on
+    (if (and (<= arg 0) (boundp 'rs/zen-restore-line-num)) ;; Use this to determine if zen is on
         (progn
-          (display-line-numbers-mode rsoori/zen-restore-line-num)
-          (hide-mode-line-mode rsoori/zen-restore-mode-line)
+          (display-line-numbers-mode rs/zen-restore-line-num)
+          (hide-mode-line-mode rs/zen-restore-mode-line)
           (olivetti-mode -1)
-          (kill-local-variable 'rsoori/zen-restore-line-num)
-          (kill-local-variable 'rsoori/zen-restore-mode-line))
-      (if (and (not (boundp 'rsoori/zen-restore-line-num))
-               (not (boundp 'rsoori/zen-restore-mode-line))
+          (kill-local-variable 'rs/zen-restore-line-num)
+          (kill-local-variable 'rs/zen-restore-mode-line))
+      (if (and (not (boundp 'rs/zen-restore-line-num))
+               (not (boundp 'rs/zen-restore-mode-line))
                (>= arg 0))
           (progn
-            (make-local-variable 'rsoori/zen-restore-line-num)
-            (setq rsoori/zen-restore-line-num
-                  (rsoori/zen--get-mode-state 'display-line-numbers-mode))
-            (make-local-variable 'rsoori/zen-restore-mode-line)
-            (setq rsoori/zen-restore-mode-line
-                  (rsoori/zen--get-mode-state 'hide-mode-line-mode))
+            (make-local-variable 'rs/zen-restore-line-num)
+            (setq rs/zen-restore-line-num
+                  (rs/zen--get-mode-state 'display-line-numbers-mode))
+            (make-local-variable 'rs/zen-restore-mode-line)
+            (setq rs/zen-restore-mode-line
+                  (rs/zen--get-mode-state 'hide-mode-line-mode))
             (display-line-numbers-mode 0)
             (hide-mode-line-mode t)
             (olivetti-mode t))))))
+
+;; Load leader key bindings
+(when (file-exists-p bindings-file)
+  (load-file bindings-file))
 
 ;; Finally load the custom file
 (when (file-exists-p custom-file)

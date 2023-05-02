@@ -63,7 +63,7 @@ alias la='ls -a'
 alias ll='ls -ltr'
 alias grep='grep --color=auto'
 alias ironcity='compas -t "~/bin/ironcity_attach"'
-alias ec='emacsclient -r -a ""'
+alias ec='emacsclient -n -r -a ""'
 
 # Remove things that depend on xdg-open
 if [[ -z $(command -v xdg-open) ]]; then
