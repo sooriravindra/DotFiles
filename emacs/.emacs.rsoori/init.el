@@ -45,13 +45,7 @@
                 confirm-kill-emacs #'y-or-n-p
                 find-file-visit-truename t
                 frame-title-format '("Evil Emacs - %b"))
-  ;; Disable line numbers for some modes
-  (dolist (mode '(term-mode-hook
-                  vterm-mode-hook
-                  shell-mode-hook
-                  treemacs-mode-hook
-                  eshell-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
   ;; Use y/n instead of yes/no
   (if EMACS28+ (setq-default use-short-answers t) (fset 'yes-or-no-p 'y-or-n-p))
   ;; Prompt for Gpg password in minibuffer
@@ -278,6 +272,13 @@
 (use-package fzf
   :defer t)
 
+(use-package pdf-tools
+  :if (eq system-type `gnu/linux)
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :defer t
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page))
 
 ;; Custom functions
 

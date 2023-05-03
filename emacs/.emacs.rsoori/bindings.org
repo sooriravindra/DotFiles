@@ -8,6 +8,7 @@ The table below is used to generate the leader key bindings.
 | Key | Function                           | Description            |
 |-----+------------------------------------+------------------------|
 | ;   | execute-extended-command           | M-x                    |
+| .   | find-file                          | Find file              |
 | /   | evil-commentary-line               | Commentary             |
 | :   | pp-eval-expression                 | Evaluate expression    |
 | b   |                                    | Buffer/bookmark        |

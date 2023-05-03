@@ -24,9 +24,6 @@
                     :background "#282a36"
                     :height 200)
 
-;; Display line numbers
-(global-display-line-numbers-mode t)
-
 ;; Show column number in mode-line
 (column-number-mode)
 
