@@ -1,8 +1,8 @@
-(setq rs/literate-config   (concat user-emacs-directory "config.org")
-      rs/bindings-file     (concat user-emacs-directory "bindings.el")
-      rs/custom-file       (concat user-emacs-directory "custom-file.el")
-      rs/early-init-file   (concat user-emacs-directory "early-init.el")
-      rs/early-init-exists (file-exists-p rs/early-init-file))
+(setq-default rs/literate-config   (concat user-emacs-directory "config.org")
+              rs/bindings-file     (concat user-emacs-directory "bindings.el")
+              custom-file          (concat user-emacs-directory "custom.el")
+              rs/early-init-file   (concat user-emacs-directory "early-init.el")
+              rs/early-init-exists (file-exists-p rs/early-init-file))
 
 ;; Generate rs/bindings-file if it doesn't exist
 (unless (file-exists-p rs/bindings-file)
