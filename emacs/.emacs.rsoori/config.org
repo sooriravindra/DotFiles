@@ -3,6 +3,7 @@
 #+CREATED: 7th April 2023
 
 * Early init
+** Garbage collector trick
 #+begin_src emacs-lisp :tangle early-init.el
   ;; Garbage collector trick to speed up init
   (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
@@ -11,16 +12,10 @@
                                  ;; restore after startup
                                  (setq gc-cons-threshold (* 16 1024 1024)
                                        gc-cons-percentage 0.1)))
+#+end_src
 
-  ;; Measure time for startup
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (message "Emacs init in %s with %d garbage collections."
-                       (format "%.2f seconds"
-                               (float-time
-                                (time-subtract after-init-time before-init-time)))
-                       gcs-done)))
-
+** Setup frame elements
+#+begin_src emacs-lisp :tangle early-init.el
   ;; Preventing frame resize saves some time
   (setq frame-inhibit-implied-resize t)
 
@@ -41,12 +36,21 @@
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (tooltip-mode -1)
+#+end_src
 
-  (defun rsoori/mode-line-format (left right)
+** Mode line setup
+#+begin_src emacs-lisp :tangle early-init.el
+
+  (defun rs/mode-line-format (left right)
     "Return a string of `window-width' length.
-  Containing LEFT, and RIGHT aligned respectively."
+     Containing LEFT, and RIGHT aligned respectively."
     (let ((available-width (- (window-width) (length left) 1)))
       (format (format "%%s %%%ds " available-width) left right)))
+
+  (defun rs/formatted-evil-state ()
+    "Return the evil state of current buffer with first letter capitalized."
+    (concat " " (upcase (substring (symbol-name evil-state) 0 1))
+            (substring (symbol-name evil-state) 1) " ") )
 
   (defface evil-mode-line-face '((t (:foreground  "black"
                                                   :background "orange")))
@@ -54,19 +58,13 @@
 
   (setq-default
    mode-line-format
-   '((:eval (rsoori/mode-line-format
+   '((:eval (rs/mode-line-format
              ;; left portion
              (format-mode-line
               (quote ("%e"
                       (:eval
                        (when (bound-and-true-p evil-local-mode)
-                         (let ((formatted-evil-state
-                                (concat
-                                 " "
-                                 (upcase
-                                  (substring (symbol-name evil-state) 0 1))
-                                 (substring (symbol-name evil-state) 1)
-                                 " "))) ;; normal -> Normal
+                         (let ((formatted-evil-state (rs/formatted-evil-state)))
                            (if (and (fboundp 'mode-line-window-selected-p)
                                     (mode-line-window-selected-p))
                                (propertize formatted-evil-state
@@ -84,8 +82,9 @@
   (defconst EMACS27+ (not (version< emacs-version "27")))
   (defconst EMACS28+ (not (version< emacs-version "28")))
 
-  ;; load early-init.el in earlier versions
-  (when (not EMACS27+)
+  ;; load early-init.el in earlier versions and on initial tangling
+  (when (or (not EMACS27+)
+            (not rs/early-init-exists))
     (load (concat user-emacs-directory "early-init.el")))
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -116,7 +115,7 @@
   ;; Initialize package sources
   (require 'package)
 
-  ;; Enable obtaining packages from melpa and elpa devel (required for compat-28.x)
+  ;; Add melpa and elpa devel (required for compat-28.x)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                            ("elpa-devel" . "https://elpa.gnu.org/devel/")))
   (package-initialize)
@@ -142,7 +141,7 @@
           `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
-** Org 
+** Org
 #+begin_src emacs-lisp
   (use-package org
     :config
@@ -306,9 +305,12 @@
 
   (use-package git-gutter-fringe
     :config
-    (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
-    (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-    (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+    (define-fringe-bitmap
+      'git-gutter-fr:added [224] nil nil '(center repeated))
+    (define-fringe-bitmap
+      'git-gutter-fr:modified [224] nil nil '(center repeated))
+    (define-fringe-bitmap
+      'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 #+end_src
 
@@ -340,8 +342,20 @@
   ;; Fuzzy finder
   (use-package affe
     :init
-    (setq affe-find-command "rg --color=never --no-ignore --hidden --files")
-    (setq affe-grep-command "rg --null --color=never --max-columns=1000 --no-heading --line-number --no-ignore --hidden -v ^$")
+    (setq affe-find-command (concat "rg"
+                                    " --color=never"
+                                    " --no-ignore"
+                                    " --hidden"
+                                    " --files"))
+    (setq affe-grep-command (concat "rg"
+                                    "--null"
+                                    " --color=never"
+                                    " --max-columns=1000"
+                                    " --no-heading"
+                                    " --line-number"
+                                    " --no-ignore"
+                                    " --hidden"
+                                    " -v ^$"))
     :defer t)
 
   ;; Also include FZF
@@ -406,9 +420,10 @@
 
 #+begin_src emacs-lisp
   (defun rs/gen-input(KEYS)
-    "Generates the input key sequence KEYS. KEYS must be kbd compatible string."
+    "Generates the input key sequence from kbd compatible string KEYS."
     (interactive)
-    (setq  unread-command-events (nconc (listify-key-sequence (kbd KEYS)) unread-command-events)))
+    (setq  unread-command-events
+           (nconc (listify-key-sequence (kbd KEYS)) unread-command-events)))
 
   (defun rs/help ()
     (interactive)
@@ -420,42 +435,43 @@
 
 #+begin_src emacs-lisp
 
-  ;; Hide modeline
-  (use-package hide-mode-line
-    :defer t)
+    ;; Hide modeline
+    (use-package hide-mode-line
+      :defer t)
 
-  ;; Distraction free writing
-  (use-package olivetti
-    :defer t)
+    ;; Distraction free writing
+    (use-package olivetti
+      :defer t)
 
-  (defun rs/zen--get-mode-state (mode)
-    "Returns t if MODE is set to non-nil else returns -1"
-    (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
+    (defun rs/zen--get-mode-state (mode)
+      "Returns t if MODE is set to non-nil else returns -1"
+      (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
 
-  (defun rs/toggle-zen (&optional arg)
-    "Zen for intense focus"
-    (interactive "P")
-    (let ((arg (or arg 0)))
-      (if (and (<= arg 0) (boundp 'rs/zen-restore-line-num)) ;; Use this to determine if zen is on
-          (progn
-            (display-line-numbers-mode rs/zen-restore-line-num)
-            (hide-mode-line-mode rs/zen-restore-mode-line)
-            (olivetti-mode -1)
-            (kill-local-variable 'rs/zen-restore-line-num)
-            (kill-local-variable 'rs/zen-restore-mode-line))
-        (if (and (not (boundp 'rs/zen-restore-line-num))
-                 (not (boundp 'rs/zen-restore-mode-line))
-                 (>= arg 0))
+    (defun rs/toggle-zen (&optional arg)
+      "Zen for intense focus"
+      (interactive "P")
+      (let ((arg (or arg 0)))
+        ;; Check if we need to turn off zen
+        (if (and (<= arg 0) (boundp 'rs/zen-restore-line-num))
             (progn
-              (make-local-variable 'rs/zen-restore-line-num)
-              (setq rs/zen-restore-line-num
-                    (rs/zen--get-mode-state 'display-line-numbers-mode))
-              (make-local-variable 'rs/zen-restore-mode-line)
-              (setq rs/zen-restore-mode-line
-                    (rs/zen--get-mode-state 'hide-mode-line-mode))
-              (display-line-numbers-mode 0)
-              (hide-mode-line-mode t)
-              (olivetti-mode t))))))
+              (display-line-numbers-mode rs/zen-restore-line-num)
+              (hide-mode-line-mode rs/zen-restore-mode-line)
+              (olivetti-mode -1)
+              (kill-local-variable 'rs/zen-restore-line-num)
+              (kill-local-variable 'rs/zen-restore-mode-line))
+          (if (and (not (boundp 'rs/zen-restore-line-num))
+                   (not (boundp 'rs/zen-restore-mode-line))
+                   (>= arg 0))
+              (progn
+                (make-local-variable 'rs/zen-restore-line-num)
+                (setq rs/zen-restore-line-num
+                      (rs/zen--get-mode-state 'display-line-numbers-mode))
+                (make-local-variable 'rs/zen-restore-mode-line)
+                (setq rs/zen-restore-mode-line
+                      (rs/zen--get-mode-state 'hide-mode-line-mode))
+                (display-line-numbers-mode 0)
+                (hide-mode-line-mode t)
+                (olivetti-mode t))))))
 #+end_src
 
 * Load bindings and custom file

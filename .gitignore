@@ -1,5 +1,4 @@
 emacs/.emacs.rsoori/*
 !emacs/.emacs.rsoori/init.el
-!emacs/.emacs.rsoori/early-init.el
 !emacs/.emacs.rsoori/bindings.org
 !emacs/.emacs.rsoori/config.org
