@@ -29,7 +29,8 @@
   (column-number-mode)
 
   ;; Don't show startup page
-  (setq inhibit-startup-message t)
+  (setq-default inhibit-startup-message t
+                frame-title-format '("EvilEmacs - %b"))
 
   ;; Hide scrollbar, toolbar, menubar and tool tips
   (scroll-bar-mode -1)
@@ -64,53 +65,75 @@
               (quote ("%e"
                       (:eval
                        (when (bound-and-true-p evil-local-mode)
-                         (let ((formatted-evil-state (rs/formatted-evil-state)))
+                         (let ((formatted-state (rs/formatted-evil-state)))
                            (if (and (fboundp 'mode-line-window-selected-p)
                                     (mode-line-window-selected-p))
-                               (propertize formatted-evil-state
+                               (propertize formatted-state
                                            'face 'evil-mode-line-face)
-                             (propertize formatted-evil-state)))))
+                             (propertize formatted-state)))))
                       " " (:eval (when (buffer-modified-p) "[+]"))
                       " " mode-line-buffer-identification
                       " %l:%c")))
              ;; right portion
              (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
 #+end_src
+
 * Generic config
+** Convenient constants
 #+begin_src emacs-lisp
-  ;; Convenient constants to be used later
   (defconst EMACS27+ (not (version< emacs-version "27")))
   (defconst EMACS28+ (not (version< emacs-version "28")))
+ #+end_src
+ 
+** Conditionally load early-init.el
+ #+begin_src emacs-lisp
 
   ;; load early-init.el in earlier versions and on initial tangling
   (when (or (not EMACS27+)
             (not rs/early-init-exists))
     (load (concat user-emacs-directory "early-init.el")))
+ #+end_src
 
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  ;; C-u is used to scroll, use C-M-u as alternative for universal argument
-  (global-set-key (kbd "C-M-u") 'universal-argument)
-  (setq-default native-comp-async-report-warnings-errors nil
-                indent-tabs-mode nil
-                use-package-always-ensure t
-                create-lockfiles nil
-                visible-bell t
-                make-backup-files nil
-                confirm-kill-emacs #'y-or-n-p
-                find-file-visit-truename t
-                frame-title-format '("Evil Emacs - %b"))
-  (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
-  ;; Use y/n instead of yes/no
-  (if EMACS28+ (setq-default use-short-answers t)
-    (fset 'yes-or-no-p 'y-or-n-p))
-  ;; Prompt for Gpg password in minibuffer
-  (set (if EMACS27+ 'epg-pinentry-mode 'epa-pinentry-mode) 'loopback)
+** Global keybindings
+ #+begin_src emacs-lisp
+   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+   ;; C-u is used to scroll, use C-M-u as alternative for universal argument
+   (global-set-key (kbd "C-M-u") 'universal-argument)
+#+end_src
+
+** Global default variables
+#+begin_src emacs-lisp
+   (setq-default native-comp-async-report-warnings-errors nil
+                 indent-tabs-mode nil
+                 use-package-always-ensure t
+                 create-lockfiles nil
+                 visible-bell t
+                 make-backup-files nil
+                 confirm-kill-emacs #'y-or-n-p
+                 find-file-visit-truename t)
+#+end_src
+
+** Use y/n instead of yes/no
+#+begin_src emacs-lisp
+   (if EMACS28+ (setq-default use-short-answers t)
+     (fset 'yes-or-no-p 'y-or-n-p))
+#+end_src
+
+** Prompt for Gpg password in minibuffer
+#+begin_src emacs-lisp
+   (set (if EMACS27+ 'epg-pinentry-mode 'epa-pinentry-mode) 'loopback)
+#+end_src
+
+** Default modes
+#+begin_src emacs-lisp
   (show-paren-mode 1)
   (winner-mode 1)
   (global-visual-line-mode 1)
+  ;; Display line numbers only in programming modes
+  (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
 #+end_src
 
-* Package setup
+* use-package setup
 #+begin_src emacs-lisp
   ;; Initialize package sources
   (require 'package)
@@ -170,6 +193,10 @@
   (use-package org-roam-ui
     :defer t)
 
+  ;; Make src blocks in html output mimmick the buffer
+  (use-package htmlize
+    :defer t)
+
 #+end_src
 
 ** Evil
@@ -192,16 +219,24 @@
     ;; Make <ctrl><space> leader in all modes
     (evil-set-leader nil (kbd "C-SPC"))
     ;; In addition, make <space> leader in normal and visual mode.
-    (evil-set-leader 'normal (kbd "SPC"))
-    (evil-set-leader 'visual (kbd "SPC"))
+    (evil-set-leader '(normal visual) (kbd "SPC"))
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
-    (evil-ex-define-cmd "smile" '(lambda () (interactive) (message ":D"))))
+    (evil-ex-define-cmd "smile" 'zone))
+
+  ;; Load leader key bindings
+  (load-file rs/bindings-file)
 
   ;; Morreee Vim
   (use-package evil-collection
     :after evil
-    :config (evil-collection-init))
+    :config
+    ;; Fix <SPC> as leader in evil-collection
+    (defun fix-leader-translations (_mode mode-keymaps &rest _rest)
+      (evil-collection-translate-key 'normal mode-keymaps
+        (kbd "SPC") (kbd "C-SPC")))
+    (add-hook 'evil-collection-setup-hook #'fix-leader-translations)
+    (evil-collection-init))
 
   ;; Snipe 'em
   (use-package evil-snipe
@@ -218,6 +253,7 @@
   (use-package evil-matchit
     :config (global-evil-matchit-mode 1))
 #+end_src
+
 ** Completion
 #+begin_src emacs-lisp
   ;; Completion system
@@ -288,6 +324,14 @@
   ;; Frame wide text scaling
   (use-package default-text-scale
     :config (default-text-scale-mode 1))
+
+  ;; Highlight cursor
+  (use-package beacon
+    :defer t)
+
+  ;; Cat in the modeline
+  (use-package nyan-mode
+    :defer t)
 
 #+end_src
 
@@ -386,6 +430,7 @@
     :pin melpa
     :config (setq esup-depth 0))
 
+  ;; Async support
   (use-package async
     :defer t)
 
@@ -398,16 +443,8 @@
     :defer t
     :commands command-log-mode)
 
-  ;; Highlight cursor
-  (use-package beacon
-    :defer t)
-
   ;; Handy command to restart
   (use-package restart-emacs
-    :defer t)
-
-  ;; Cat in the modeline
-  (use-package nyan-mode
     :defer t)
 
   ;; Still editing vim config files?
@@ -543,13 +580,11 @@ The table below is used to generate the leader key bindings.
                 (olivetti-mode t))))))
 #+end_src
 
-* Load bindings and custom file
+* In the end
+** Load custom settings
 
 #+begin_src emacs-lisp
 
-  (load-file rs/bindings-file)
-
-  ;; Finally load the custom file
   (when (file-exists-p custom-file)
     (load-file custom-file))
 
