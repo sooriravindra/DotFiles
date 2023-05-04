@@ -206,7 +206,8 @@
     :init
     (setq evil-want-integration t
           evil-want-keybinding nil
-          evil-want-C-u-scroll t)
+          evil-want-C-u-scroll t
+          evil-symbol-word-search t)
     :config
     (evil-mode 1)
     (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
