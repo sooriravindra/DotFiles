@@ -222,6 +222,7 @@
     (evil-set-leader '(normal visual) (kbd "SPC"))
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
+    (evil-define-key 'normal 'magit-mode-map (kbd "SPC") 'rs/send-leader)
     (evil-ex-define-cmd "smile" 'zone))
 
   ;; Load leader key bindings
@@ -534,6 +535,10 @@ The table below is used to generate the leader key bindings.
   (defun rs/help ()
     (interactive)
     (rs/gen-input "C-h"))
+
+  (defun rs/send-leader ()
+    (interactive)
+    (rs/gen-input "C-SPC"))
 
 #+end_src
 
