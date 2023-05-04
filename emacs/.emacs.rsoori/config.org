@@ -222,7 +222,6 @@
     (evil-set-leader '(normal visual) (kbd "SPC"))
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
-    (evil-define-key 'normal 'magit-mode-map (kbd "SPC") 'rs/send-leader)
     (evil-ex-define-cmd "smile" 'zone))
 
   ;; Load leader key bindings
@@ -340,6 +339,8 @@
 #+begin_src emacs-lisp
   ;; Apparently the best git interface
   (use-package magit
+    :config
+    (define-key magit-mode-map (kbd "SPC") 'rs/send-leader)
     :bind ("C-x g" . magit-status))
 
   ;; Git gutter
