@@ -314,11 +314,11 @@
 
   ;; LSP client
   (use-package eglot
-    :init
-    (add-hook 'c-mode-hook 'eglot-ensure)
-    (add-hook 'c++-mode-hook 'eglot-ensure)
+    :hook ((python-mode c++-mode c-mode) . eglot-ensure)
     :config
-    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd")))
+    (setq eglot-autoshutdown t)
+    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+    (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
 #+end_src
 
 ** UI
