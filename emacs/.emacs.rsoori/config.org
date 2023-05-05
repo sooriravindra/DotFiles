@@ -223,6 +223,7 @@
     (evil-set-leader '(normal visual) (kbd "SPC"))
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
+    (evil-ex-define-cmd "bw[ipeout]" 'kill-this-buffer)
     (evil-ex-define-cmd "smile" 'zone))
 
   ;; Load leader key bindings
@@ -482,7 +483,7 @@ The table below is used to generate the leader key bindings.
 | b   |                                    | Buffer/bookmark        |
 | bb  | consult-buffer                     | Switch buffer/bookmark |
 | bm  | bookmark-set                       | Set bookmark           |
-| bw  | kill-buffer                        | Kill buffer            |
+| bw  | kill-this-buffer                   | Kill buffer            |
 | bn  | evil-next-buffer                   | Next buffer            |
 | bp  | evil-prev-buffer                   | Previous buffer        |
 | bl  | evil-switch-to-windows-last-buffer | Last buffer            |
