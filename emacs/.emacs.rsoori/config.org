@@ -253,6 +253,11 @@
 
   (use-package evil-matchit
     :config (global-evil-matchit-mode 1))
+
+  (use-package evil-goggles
+    :ensure t
+    :config
+    (evil-goggles-mode))
 #+end_src
 
 ** Completion
@@ -309,10 +314,11 @@
 
   ;; LSP client
   (use-package eglot
-    :config
-    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+    :init
     (add-hook 'c-mode-hook 'eglot-ensure)
-    (add-hook 'c++-mode-hook 'eglot-ensure))
+    (add-hook 'c++-mode-hook 'eglot-ensure)
+    :config
+    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd")))
 #+end_src
 
 ** UI
