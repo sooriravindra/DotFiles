@@ -23,20 +23,55 @@
   (set-face-attribute 'default nil
                       :foreground "#ffffff"
                       :background "#282a36"
-                      :height 200)
+                      :height 170)
 
   ;; Show column number in mode-line
   (column-number-mode)
-
-  ;; Don't show startup page
-  (setq-default inhibit-startup-message t
-                frame-title-format '("EvilEmacs - %b"))
 
   ;; Hide scrollbar, toolbar, menubar and tool tips
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (tooltip-mode -1)
+#+end_src
+
+** Setup scratch buffer
+#+begin_src emacs-lisp :tangle early-init.el
+  ;; Don't show startup page
+  (setq-default inhibit-startup-message t
+                frame-title-format '("Evil Emacs - %b"))
+
+
+
+  (setq initial-scratch-message
+        "
+
+
+
+                       ;▓█████ ██▒   █▓ ██▓ ██▓
+                       ;▓█   ▀▓██░   █▒▓██▒▓██▒
+                       ;▒███   ▓██  █▒░▒██▒▒██░
+                       ;▒▓█  ▄  ▒██ █░░░██░▒██░
+                       ;░▒████▒  ▒▀█░  ░██░░██████▒
+                       ;░░ ▒░ ░  ░ ▐░  ░▓  ░ ▒░▓  ░
+                        ;░ ░  ░  ░ ░░   ▒ ░░ ░ ▒  ░
+                          ;░       ░░   ▒ ░  ░ ░  ░
+                          ;░  ░     ░   ░      ░
+                                  ;░
+
+
+
+               \"█████  ███▄ ▄███▓ ▄▄▄       ▄████▄    ██████
+               ▓█   ▀ ▓██▒▀█▀ ██▒▒████▄    ▒██▀ ▀█  ▒██    ░
+               ▒███   ▓██    ▓██░▒██  ▀█▄  ▒▓█    ▄ ░ ▓██▄▄
+               ▒▓█  ▄ ▒██    ▒██ ░██▄▄▄▄██ ▒▓▓▄ ▄██▒  ▒   ██▒
+               ░▒████▒▒██▒   ░██▒ ▓█   ▓██▒▒ ▓███▀ ░▒██████▒▒
+               ░░ ▒░ ░░ ▒░   ░  ░ ▒▒   ▓▒█░░ ░▒ ▒  ░▒ ▒▓▒ ▒ ░
+                ░ ░  ░░  ░      ░  ▒   ▒▒ ░  ░  ▒   ░ ░▒  ░ ░
+                  ░   ░      ░     ░   ▒   ░        ░  ░  ░
+                  ░  ░       ░         ░  ░░ ░            ░
+                                           \"")
+
 #+end_src
 
 ** Mode line setup
@@ -130,7 +165,9 @@
   (winner-mode 1)
   (global-visual-line-mode 1)
   ;; Display line numbers only in programming modes
-  (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+  (add-hook 'prog-mode-hook
+            (lambda () (unless (string= (buffer-name) "*scratch*")
+                         (display-line-numbers-mode 1))))
 #+end_src
 
 * use-package setup
@@ -216,7 +253,6 @@
     (evil-set-undo-system 'undo-redo)
     (evil-select-search-module 'evil-search-module 'evil-search)
     (evil-set-initial-state 'messages-buffer-mode 'normal)
-    (evil-set-initial-state 'dashboard-mode 'normal)
     ;; Make <ctrl><space> leader in all modes
     (evil-set-leader nil (kbd "C-SPC"))
     ;; In addition, make <space> leader in normal and visual mode.
@@ -482,7 +518,8 @@ The table below is used to generate the leader key bindings.
 | :   | pp-eval-expression                 | Evaluate expression    |
 | b   |                                    | Buffer/bookmark        |
 | bb  | consult-buffer                     | Switch buffer/bookmark |
-| bm  | bookmark-set                       | Set bookmark           |
+| bs  | bookmark-set                       | Set bookmark           |
+| bm  | bookmark-bmenu-list                | List bookmark          |
 | bw  | kill-this-buffer                   | Kill buffer            |
 | bn  | evil-next-buffer                   | Next buffer            |
 | bp  | evil-prev-buffer                   | Previous buffer        |
@@ -601,6 +638,11 @@ The table below is used to generate the leader key bindings.
 #+end_src
 
 * In the end
+** Center scratch
+#+begin_src emacs-lisp
+  (add-hook 'lisp-interaction-mode-hook (lambda () (when (string= (buffer-name) "*scratch*") (olivetti-mode 1))))
+#+end_src
+
 ** Load custom settings
 
 #+begin_src emacs-lisp
