@@ -387,6 +387,16 @@
   (use-package nyan-mode
     :defer t)
 
+  ;; Hide modeline
+  (use-package hide-mode-line
+    :defer t)
+
+  ;; Distraction free writing
+  (use-package olivetti
+    :config
+    (add-hook 'emacs-startup-hook
+              (lambda () (with-current-buffer "*scratch*"
+                           (olivetti-mode 1)))))
 #+end_src
 
 ** Git
@@ -598,14 +608,6 @@ The table below is used to generate the leader key bindings.
 
 #+begin_src emacs-lisp
 
-    ;; Hide modeline
-    (use-package hide-mode-line
-      :defer t)
-
-    ;; Distraction free writing
-    (use-package olivetti
-      :defer t)
-
     (defun rs/zen--get-mode-state (mode)
       "Returns t if MODE is set to non-nil else returns -1"
       (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
@@ -640,7 +642,6 @@ The table below is used to generate the leader key bindings.
 * In the end
 ** Center scratch
 #+begin_src emacs-lisp
-  (add-hook 'lisp-interaction-mode-hook (lambda () (when (string= (buffer-name) "*scratch*") (olivetti-mode 1))))
 #+end_src
 
 ** Load custom settings
