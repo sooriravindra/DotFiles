@@ -161,10 +161,14 @@
 
 ** Default modes
 #+begin_src emacs-lisp
+  ;; Revert Dired and other buffers too
+  (setq global-auto-revert-non-file-buffers t)
+  (global-auto-revert-mode 1)
+  (savehist-mode 1)
   (show-paren-mode 1)
   (winner-mode 1)
   (global-visual-line-mode 1)
-  ;; Display line numbers only in programming modes
+  ;; Display line numbers only in programming modes. Exclude scratch.
   (add-hook 'prog-mode-hook
             (lambda () (unless (string= (buffer-name) "*scratch*")
                          (display-line-numbers-mode 1))))
@@ -485,10 +489,6 @@
   ;; Async support
   (use-package async
     :defer t)
-
-  ;; Save command history
-  (use-package savehist
-    :config (savehist-mode t))
 
   ;; Show keyboard input
   (use-package command-log-mode
