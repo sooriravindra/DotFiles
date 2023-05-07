@@ -1,6 +1,13 @@
-#+TITLE: Emacs Configuration
+#+TITLE: Evil Emacs
 #+AUTHOR: Raveendra Soori
 #+CREATED: 7th April 2023
+
+This file is responsible for configuring Emacs to my needs. The accompanying init.el file is only responsible for reading this file's different sections and generating three separate files. These files are
+- ~early-init.el~ : Initialization that needs to take place before the frame loads
+- ~init.el~ : Main intitialization file
+- ~bindings.el~ : Keybindings file generated from the bindings table
+
+This is a config that took a lot of inspiration (read stealing) from the [[https://github.com/daviwil/emacs-from-scratch]["Emacs From Scratch"]] repository.
 
 * Early init
 ** Garbage collector trick
@@ -196,7 +203,7 @@
 
 * Packages
 ** Cleanliness
-Note: We enable savehist-mode here and not in Generic Config > Default modes because no-littering changes the path of history file.
+NOTE: We enable savehist-mode here and not in Generic Config > Default modes because no-littering changes the path of history file.
 #+begin_src emacs-lisp
   ;; Keep things organized
   (use-package no-littering
@@ -303,9 +310,6 @@ Note: We enable savehist-mode here and not in Generic Config > Default modes bec
     (evil-set-leader nil (kbd "<leader> m") t)
     (evil-ex-define-cmd "bw[ipeout]" 'kill-this-buffer)
     (evil-ex-define-cmd "smile" 'zone))
-
-  ;; Load leader key bindings
-  (load-file rs/bindings-file)
 
   ;; Morreee Vim
   (use-package evil-collection
@@ -643,12 +647,15 @@ The table below is used to generate the leader key bindings.
 #+end_src
 
 * In the end
-** Center scratch
+** Load bindings
 #+begin_src emacs-lisp
+
+  ;; Load leader key bindings
+  (load-file rs/bindings-file)
+
 #+end_src
 
 ** Load custom settings
-
 #+begin_src emacs-lisp
 
   (when (file-exists-p custom-file)
