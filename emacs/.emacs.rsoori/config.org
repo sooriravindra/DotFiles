@@ -162,7 +162,6 @@
   ;; Revert Dired and other buffers too
   (setq global-auto-revert-non-file-buffers t)
   (global-auto-revert-mode 1)
-  (savehist-mode 1)
   (show-paren-mode 1)
   (winner-mode 1)
   (global-visual-line-mode 1)
@@ -195,12 +194,14 @@
 
 * Packages
 ** Cleanliness
+Note: We enable savehist-mode here and not in Generic Config > Default modes because no-littering changes the path of history file.
 #+begin_src emacs-lisp
   ;; Keep things organized
   (use-package no-littering
     :config
     (setq auto-save-file-name-transforms
-          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+    (savehist-mode 1))
 #+end_src
 
 ** UI
