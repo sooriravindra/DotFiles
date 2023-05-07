@@ -88,8 +88,8 @@
     (concat " " (upcase (substring (symbol-name evil-state) 0 1))
             (substring (symbol-name evil-state) 1) " ") )
 
-  (defface evil-mode-line-face '((t (:foreground  "black"
-                                                  :background "orange")))
+  (defface rs/evil-state-face '((t (:foreground  "black"
+                                                 :background "orange")))
     "Face for evil state in mode-line.")
 
   (setq-default
@@ -104,11 +104,13 @@
                            (if (and (fboundp 'mode-line-window-selected-p)
                                     (mode-line-window-selected-p))
                                (propertize formatted-state
-                                           'face 'evil-mode-line-face)
+                                           'face 'rs/evil-state-face)
                              (propertize formatted-state)))))
                       " " (:eval (when (buffer-modified-p) "[+]"))
                       " " mode-line-buffer-identification
-                      " %l:%c")))
+                      " %l:%c"
+                      " " (:eval (list (nyan-create)))
+                      )))
              ;; right portion
              (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
 #+end_src
