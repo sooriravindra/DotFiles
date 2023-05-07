@@ -269,6 +269,17 @@ NOTE: We enable savehist-mode here and not in Generic Config > Default modes bec
     :hook (org-mode . org-indent-mode)
     :defer t)
 
+  (with-eval-after-load 'org
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist
+                 '("s" . "src"))
+    (add-to-list 'org-structure-template-alist
+                 '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist
+                 '("py" . "src python"))
+    (add-to-list 'org-structure-template-alist
+                 '("el" . "src emacs-lisp"))
+    )
   ;; Fancier bullets for org mode
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode)
