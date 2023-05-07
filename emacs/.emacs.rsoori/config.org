@@ -319,7 +319,7 @@ NOTE: We enable savehist-mode here and not in Generic Config > Default modes bec
     (evil-set-leader '(normal visual) (kbd "SPC"))
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
-    (evil-ex-define-cmd "bw[ipeout]" 'kill-this-buffer)
+    (evil-ex-define-cmd "bw[ipeout]" 'rs/kill-buffer)
     (evil-ex-define-cmd "smile" 'zone))
 
   ;; Morreee Vim
@@ -548,7 +548,7 @@ The table below is used to generate the leader key bindings.
 | bb  | consult-buffer                     | Switch buffer/bookmark |
 | bs  | bookmark-set                       | Set bookmark           |
 | bm  | bookmark-bmenu-list                | List bookmark          |
-| bw  | kill-this-buffer                   | Kill buffer            |
+| bw  | rs/kill-buffer                     | Kill buffer            |
 | bn  | evil-next-buffer                   | Next buffer            |
 | bp  | evil-prev-buffer                   | Previous buffer        |
 | bl  | evil-switch-to-windows-last-buffer | Last buffer            |
@@ -619,6 +619,10 @@ The table below is used to generate the leader key bindings.
   (defun rs/send-leader ()
     (interactive)
     (rs/gen-input "C-SPC"))
+
+  (defun rs/kill-buffer ()
+    (interactive)
+    (kill-buffer (current-buffer)))
 
 #+end_src
 
