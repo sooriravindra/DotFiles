@@ -122,10 +122,8 @@
  
 ** Conditionally load early-init.el
  #+begin_src emacs-lisp
-
-  ;; load early-init.el in earlier versions and on initial tangling
-  (when (or (not EMACS27+)
-            (not rs/early-init-exists))
+  ;; load early-init.el in earlier versions
+  (when (not EMACS27+)
     (load (concat user-emacs-directory "early-init.el")))
  #+end_src
 
@@ -203,6 +201,43 @@
     :config
     (setq auto-save-file-name-transforms
           `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+#+end_src
+
+** UI
+#+begin_src emacs-lisp
+  ;; Themes
+  (use-package doom-themes
+    :init (load-theme 'doom-dracula t))
+
+  (use-package all-the-icons
+    :defer t)
+
+  ;; Show possible keys and bindings
+  (use-package which-key
+    :config (which-key-mode))
+
+  ;; Frame wide text scaling
+  (use-package default-text-scale
+    :config (default-text-scale-mode 1))
+
+  ;; Highlight cursor
+  (use-package beacon
+    :defer t)
+
+  ;; Cat in the modeline
+  (use-package nyan-mode
+    :defer t)
+
+  ;; Hide modeline
+  (use-package hide-mode-line
+    :defer t)
+
+  ;; Distraction free writing
+  (use-package olivetti
+    :config
+    (add-hook 'emacs-startup-hook
+              (lambda () (with-current-buffer "*scratch*"
+                           (olivetti-mode 1)))))
 #+end_src
 
 ** Org
@@ -360,43 +395,6 @@
     (setq eglot-autoshutdown t)
     (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
     (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
-#+end_src
-
-** UI
-#+begin_src emacs-lisp
-  ;; Themes
-  (use-package doom-themes
-    :init (load-theme 'doom-dracula t))
-
-  (use-package all-the-icons
-    :defer t)
-
-  ;; Show possible keys and bindings
-  (use-package which-key
-    :config (which-key-mode))
-
-  ;; Frame wide text scaling
-  (use-package default-text-scale
-    :config (default-text-scale-mode 1))
-
-  ;; Highlight cursor
-  (use-package beacon
-    :defer t)
-
-  ;; Cat in the modeline
-  (use-package nyan-mode
-    :defer t)
-
-  ;; Hide modeline
-  (use-package hide-mode-line
-    :defer t)
-
-  ;; Distraction free writing
-  (use-package olivetti
-    :config
-    (add-hook 'emacs-startup-hook
-              (lambda () (with-current-buffer "*scratch*"
-                           (olivetti-mode 1)))))
 #+end_src
 
 ** Git

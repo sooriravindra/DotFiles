@@ -21,3 +21,5 @@
 
 ;; Load rs/literate-config
 (org-babel-load-file rs/literate-config)
+
+(unless rs/early-init-exists restart-emacs)
