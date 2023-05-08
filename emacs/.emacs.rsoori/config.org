@@ -245,9 +245,12 @@ NOTE: We enable savehist-mode here and not in Generic Config > Default modes bec
   ;; Distraction free writing
   (use-package olivetti
     :config
-    (add-hook 'emacs-startup-hook
-              (lambda () (with-current-buffer "*scratch*"
-                           (olivetti-mode 1)))))
+    (if (daemonp)
+        (add-hook 'server-after-make-frame-hook
+                  'rs/center-scratch)
+      (add-hook 'emacs-startup-hook
+                  'rs/center-scratch)))
+
 #+end_src
 
 ** Org
@@ -442,6 +445,11 @@ NOTE: We enable savehist-mode here and not in Generic Config > Default modes bec
 
 #+end_src
 
+** Projects
+#+begin_src emacs-lisp
+(use-package project)
+#+end_src
+
 ** Better help
 #+begin_src emacs-lisp
   ;; Better help
@@ -557,6 +565,11 @@ The table below is used to generate the leader key bindings.
 | gj  | git-gutter:next-hunk               | Next git hunk          |
 | gk  | git-gutter:previous-hunk           | Prev git hunk          |
 | h   | rs/help                            | +Help                  |
+| p   |                                    | Project                |
+| pb  | project-switch-to-buffer           | Project switch buffer  |
+| pf  | project-find-file                  | Project find file      |
+| pp  | project-switch-project             | Switch project         |
+| pc  | project-compile                    | Project compile        |
 | r   |                                    | Org-roam               |
 | rf  | org-roam-node-find                 | Find node              |
 | ri  | org-roam-node-insert               | Insert node            |
@@ -606,6 +619,11 @@ The table below is used to generate the leader key bindings.
 * Helper functions
 
 #+begin_src emacs-lisp
+  (defun rs/center-scratch ()
+    "Centers the contents of scratch buffer"
+    (with-current-buffer "*scratch*"
+      (olivetti-mode 1)))
+
   (defun rs/gen-input(KEYS)
     "Generates the input key sequence from kbd compatible string KEYS."
     (interactive)
