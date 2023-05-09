@@ -1,6 +1,6 @@
 #+TITLE: Evil Emacs
 #+AUTHOR: Raveendra Soori
-#+CREATED: 7th April 2023
+#+DATE: 7th April 2023
 
 This file is responsible for configuring Emacs to my needs. The accompanying init.el file is only responsible for reading this file's different sections and generating three separate files. These files are
 - ~early-init.el~ : Initialization that needs to take place before the frame loads
@@ -26,11 +26,14 @@ This is a config that took a lot of inspiration (read stealing) from the [[https
   ;; Preventing frame resize saves some time
   (setq frame-inhibit-implied-resize t)
 
-  ;; Set font size and dracula theme's bg color to prevent flicker
+  ;; Set font size and theme's bg color to prevent flicker
   (set-face-attribute 'default nil
                       :foreground "#ffffff"
-                      :background "#282a36"
+                      :background "#1c1e1f"
                       :height 170)
+
+  ;; Don't flash default mode-line
+  (setq-default mode-line-format nil)
 
   ;; Show column number in mode-line
   (column-number-mode)
@@ -79,48 +82,6 @@ This is a config that took a lot of inspiration (read stealing) from the [[https
                   ░  ░       ░         ░  ░░ ░            ░
                                            \"")
 
-#+end_src
-
-** Mode line setup
-#+begin_src emacs-lisp :tangle early-init.el
-
-  (defun rs/mode-line-format (left right)
-    "Return a string of `window-width' length.
-     Containing LEFT, and RIGHT aligned respectively."
-    (let ((available-width (- (window-width) (length left) 1)))
-      (format (format "%%s %%%ds " available-width) left right)))
-
-  (defun rs/formatted-evil-state ()
-    "Return the evil state of current buffer with first letter capitalized."
-    (concat " " (upcase (substring (symbol-name evil-state) 0 1))
-            (substring (symbol-name evil-state) 1) " ") )
-
-  (defface rs/evil-state-face '((t (:foreground  "black"
-                                                 :background "orange")))
-    "Face for evil state in mode-line.")
-
-  (setq-default
-   mode-line-format
-   '((:eval (rs/mode-line-format
-             ;; left portion
-             (format-mode-line
-              (quote ("%e"
-                      (:eval
-                       (when (bound-and-true-p evil-local-mode)
-                         (let ((formatted-state (rs/formatted-evil-state)))
-                           (if (and (fboundp 'mode-line-window-selected-p)
-                                    (mode-line-window-selected-p))
-                               (propertize formatted-state
-                                           'face 'rs/evil-state-face)
-                             (propertize formatted-state)))))
-                      " " (:eval (when (buffer-modified-p) "[+]"))
-                      " " mode-line-buffer-identification
-                      " %l:%c"
-                      " " (:eval (when (fboundp 'nyan-create)
-                                   (list (nyan-create))))
-                      )))
-             ;; right portion
-             (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
 #+end_src
 
 * Generic config
@@ -219,11 +180,11 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 #+begin_src emacs-lisp
   ;; Themes
   (use-package dracula-theme
+    :disabled t
     :config (load-theme 'dracula t))
 
   (use-package doom-themes
-    :disabled t
-    :init (load-theme 'doom-dracula t))
+    :config (load-theme 'doom-molokai t))
 
   (use-package all-the-icons
     :disabled t
@@ -556,7 +517,7 @@ The table below is used to generate the leader key bindings.
 | Key | Function                           | Description            |
 |-----+------------------------------------+------------------------|
 | ;   | execute-extended-command           | M-x                    |
-| .   | find-file                          | Find file              |
+| .   | dired                              | Dired                  |
 | /   | evil-commentary-line               | Commentary             |
 | :   | pp-eval-expression                 | Evaluate expression    |
 | b   |                                    | Buffer/bookmark        |
@@ -567,6 +528,10 @@ The table below is used to generate the leader key bindings.
 | bn  | evil-next-buffer                   | Next buffer            |
 | bp  | evil-prev-buffer                   | Previous buffer        |
 | bl  | evil-switch-to-windows-last-buffer | Last buffer            |
+| f   |                                    | File                   |
+| ff  | affe-find                          | Fuzzy find             |
+| fr  | consult-recent-file                | Recent file            |
+| fs  | save-buffer                        | Save file              |
 | g   |                                    | Git                    |
 | gg  | magit-status                       | Magit status           |
 | gj  | git-gutter:next-hunk               | Next git hunk          |
@@ -651,6 +616,46 @@ The table below is used to generate the leader key bindings.
 
 #+end_src
 
+* Mode line
+#+begin_src emacs-lisp
+  (defun rs/mode-line-format (left right)
+    "Return a string of `window-width' length.
+     Containing LEFT, and RIGHT aligned respectively."
+    (let ((available-width (- (window-width) (length left) 1)))
+      (format (format "%%s %%%ds " available-width) left right)))
+
+  (defun rs/formatted-evil-state ()
+    "Return the evil state of current buffer with first letter capitalized."
+    (concat " " (upcase (substring (symbol-name evil-state) 0 1))
+            (substring (symbol-name evil-state) 1) " ") )
+
+  (defface rs/evil-state-face '((t (:foreground  "black"
+                                                 :background "orange")))
+    "Face for evil state in mode-line.")
+
+  (setq-default
+   mode-line-format
+   '((:eval (rs/mode-line-format
+             ;; left portion
+             (format-mode-line
+              (quote ("%e"
+                      (:eval
+                       (when (bound-and-true-p evil-local-mode)
+                         (let ((formatted-state (rs/formatted-evil-state)))
+                           (if (and (fboundp 'mode-line-window-selected-p)
+                                    (mode-line-window-selected-p))
+                               (propertize formatted-state
+                                           'face 'rs/evil-state-face)
+                             (propertize formatted-state)))))
+                      " " (:eval (when (buffer-modified-p) "[+]"))
+                      " " mode-line-buffer-identification
+                      " %l:%c"
+                      " " (:eval (when (fboundp 'nyan-create)
+                                   (list (nyan-create))))
+                      )))
+             ;; right portion
+             (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
+#+end_src
 * Zen UI
 
 #+begin_src emacs-lisp
