@@ -71,15 +71,15 @@ This is a config that took a lot of inspiration (read stealing) from the [[https
 
 
 
-               \"█████  ███▄ ▄███▓ ▄▄▄       ▄████▄    ██████
-               ▓█   ▀ ▓██▒▀█▀ ██▒▒████▄    ▒██▀ ▀█  ▒██    ░
-               ▒███   ▓██    ▓██░▒██  ▀█▄  ▒▓█    ▄ ░ ▓██▄▄
-               ▒▓█  ▄ ▒██    ▒██ ░██▄▄▄▄██ ▒▓▓▄ ▄██▒  ▒   ██▒
-               ░▒████▒▒██▒   ░██▒ ▓█   ▓██▒▒ ▓███▀ ░▒██████▒▒
-               ░░ ▒░ ░░ ▒░   ░  ░ ▒▒   ▓▒█░░ ░▒ ▒  ░▒ ▒▓▒ ▒ ░
-                ░ ░  ░░  ░      ░  ▒   ▒▒ ░  ░  ▒   ░ ░▒  ░ ░
-                  ░   ░      ░     ░   ▒   ░        ░  ░  ░
-                  ░  ░       ░         ░  ░░ ░            ░
+                \"█████  ███▄ ▄███▓ ▄▄▄      ▄████▄    ██████
+                ▓█   ▀ ▓██▒▀█▀ ██▒▒████▄   ▒██▀ ▀█  ▒██    ░
+                ▒███   ▓██    ▓██░▒██  ▀█▄ ▒▓█    ▄ ░ ▓██▄▄
+                ▒▓█  ▄ ▒██    ▒██ ░██▄▄▄▄██▒▓▓▄ ▄██▒  ▒   ██▒
+                ░▒████▒▒██▒   ░██▒ ▓█   ▓██▒ ▓███▀ ░▒██████▒▒
+                ░░ ▒░ ░░ ▒░   ░  ░ ▒▒   ▓▒█░ ░▒ ▒  ░▒ ▒▓▒ ▒ ░
+                 ░ ░  ░░  ░      ░  ▒   ▒▒   ░  ▒   ░ ░▒  ░ ░
+                   ░   ░      ░     ░   ▒  ░        ░  ░  ░
+                   ░  ░       ░         ░  ░ ░            ░
                                            \"")
 
 #+end_src
@@ -308,8 +308,9 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package evil-snipe
     :config (evil-snipe-mode 1))
 
-  ;; Commenting
+  ;; Commenting - Prefer rs/smart-comment over this
   (use-package evil-commentary
+    :disabled t
     :config (evil-commentary-mode 1))
 
   ;; Use gs to make jumps
@@ -518,7 +519,7 @@ The table below is used to generate the leader key bindings.
 |-----+------------------------------------+------------------------|
 | ;   | execute-extended-command           | M-x                    |
 | .   | dired                              | Dired                  |
-| /   | evil-commentary-line               | Commentary             |
+| /   | rs/smart-comment                   | Comment                |
 | :   | pp-eval-expression                 | Evaluate expression    |
 | b   |                                    | Buffer/bookmark        |
 | bb  | consult-buffer                     | Switch buffer/bookmark |
@@ -591,6 +592,12 @@ The table below is used to generate the leader key bindings.
 * Helper functions
 
 #+begin_src emacs-lisp
+  (defun rs/smart-comment (arg)
+    (interactive "*P")
+    (if (evil-visual-state-p)
+        (comment-dwim arg)
+      (comment-line arg)))
+
   (defun rs/center-scratch ()
     "Centers the contents of scratch buffer"
     (with-current-buffer "*scratch*"
