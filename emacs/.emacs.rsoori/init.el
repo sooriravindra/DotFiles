@@ -10,7 +10,7 @@
               (file-exists-p rs/early-init-file))
 
 ;; Generate rs/bindings-file if it doesn't exist
-(unless (file-exists-p rs/bindings-file)
+(when (file-newer-than-file-p rs/literate-config rs/bindings-file)
   (find-file rs/literate-config)
   (setq org-confirm-babel-evaluate nil)
   (org-babel-goto-named-src-block "gen-bindings-src")
