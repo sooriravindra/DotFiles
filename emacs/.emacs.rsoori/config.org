@@ -218,10 +218,15 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 ** UI
 #+begin_src emacs-lisp
   ;; Themes
+  (use-package dracula-theme
+    :config (load-theme 'dracula t))
+
   (use-package doom-themes
+    :disabled t
     :init (load-theme 'doom-dracula t))
 
   (use-package all-the-icons
+    :disabled t
     :defer t)
 
   ;; Show possible keys and bindings
