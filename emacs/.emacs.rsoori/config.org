@@ -308,10 +308,8 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package evil-snipe
     :config (evil-snipe-mode 1))
 
-  ;; Commenting - Prefer rs/smart-comment over this
-  (use-package evil-commentary
-    :disabled t
-    :config (evil-commentary-mode 1))
+  ;; Commenting
+  (use-package comment-dwim-2)
 
   ;; Use gs to make jumps
   (use-package evil-easymotion
@@ -519,7 +517,7 @@ The table below is used to generate the leader key bindings.
 |-----+------------------------------------+------------------------|
 | ;   | execute-extended-command           | M-x                    |
 | .   | dired                              | Dired                  |
-| /   | rs/smart-comment                   | Comment                |
+| /   | comment-dwim-2                     | Comment                |
 | :   | pp-eval-expression                 | Evaluate expression    |
 | b   |                                    | Buffer/bookmark        |
 | bb  | consult-buffer                     | Switch buffer/bookmark |
@@ -592,12 +590,6 @@ The table below is used to generate the leader key bindings.
 * Helper functions
 
 #+begin_src emacs-lisp
-  (defun rs/smart-comment (arg)
-    (interactive "*P")
-    (if (evil-visual-state-p)
-        (comment-dwim arg)
-      (comment-line arg)))
-
   (defun rs/center-scratch ()
     "Centers the contents of scratch buffer"
     (with-current-buffer "*scratch*"
@@ -699,11 +691,14 @@ The table below is used to generate the leader key bindings.
 #+end_src
 
 * In the end
-** Load bindings
+** Load bindings and override
 #+begin_src emacs-lisp
 
   ;; Load leader key bindings
   (load-file rs/bindings-file)
+
+  (evil-define-key nil org-mode-map
+    (kbd "<leader> /") 'org-comment-dwim-2)
 
 #+end_src
 
