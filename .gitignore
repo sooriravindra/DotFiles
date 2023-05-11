@@ -2,3 +2,4 @@ emacs/.emacs.rsoori/*
 !emacs/.emacs.rsoori/init.el
 !emacs/.emacs.rsoori/bindings.org
 !emacs/.emacs.rsoori/config.org
+!emacs/.emacs.rsoori/tempel-snippets.el
