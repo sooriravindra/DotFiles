@@ -371,18 +371,15 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
 ** Code completion and snippets
 #+begin_src emacs-lisp
-  ;; Text completion framework
+  ;; Use capf to show completions
   (use-package corfu
     :init (global-corfu-mode)
     :custom
     (cortu-cycle t)
-    (corfu-auto t))
+    (corfu-auto t)
+    (tab-always-indent 'complete))
 
-  (use-package emacs
-    :init
-    (setq completion-cycle-threshold 3)
-    (setq tab-always-indent 'complete))
-
+  ;; Disabled. Here for historic reasons
   (use-package company
     :disabled t
     :hook (prog-mode . company-mode)
@@ -413,9 +410,16 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
     (add-hook 'prog-mode-hook 'tempel-setup-capf)
     (add-hook 'text-mode-hook 'tempel-setup-capf)
-    (setq tempel-path (concat
-                       user-emacs-directory
-                       "tempel-snippets.el")))
+    (add-hook 'eglot-managed-mode-hook 'tempel-setup-capf)
+    (setq tempel-path (concat user-emacs-directory "tempel-snippets.el")))
+
+  ;; Snippet support with eglot
+  (use-package yasnippet
+    ;; Disable yasnippet because I'm using tempel
+    ;; :custom (yas-snippet-dirs
+    ;;          (list (concat user-emacs-directory "snippets")))
+    ;; :config (yas-global-mode)
+    )
 
 #+end_src
 
