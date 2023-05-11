@@ -15,10 +15,11 @@ This is a config that took a lot of inspiration (read stealing) from the [[https
   ;; Garbage collector trick to speed up init
   (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
         gc-cons-percentage 0.6)
-  (add-hook 'after-init-hook #'(lambda ()
-                                 ;; restore after startup
-                                 (setq gc-cons-threshold (* 16 1024 1024)
-                                       gc-cons-percentage 0.1)))
+  (add-hook 'after-init-hook
+            #'(lambda ()
+                ;; restore after startup
+                (setq gc-cons-threshold (* 16 1024 1024)
+                      gc-cons-percentage 0.1)))
 #+end_src
 
 ** Setup frame elements
@@ -30,7 +31,7 @@ This is a config that took a lot of inspiration (read stealing) from the [[https
   (set-face-attribute 'default nil
                       :foreground "#ffffff"
                       :background "#1c1e1f"
-                      :height 170)
+                      :height 125)
 
   ;; Don't flash default mode-line
   (setq-default mode-line-format nil)
@@ -343,7 +344,9 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package orderless
     :custom
     (completion-styles '(orderless basic))
-    (completion-category-overrides '((file (styles basic partial-completion)))))
+    (completion-category-defaults nil)
+    (completion-category-overrides
+     '((file (styles basic partial-completion)))))
 
   ;; Commands that make use of completion
   (use-package consult
@@ -366,10 +369,22 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
 #+end_src
 
-** Code completion
+** Code completion and snippets
 #+begin_src emacs-lisp
   ;; Text completion framework
+  (use-package corfu
+    :init (global-corfu-mode)
+    :custom
+    (cortu-cycle t)
+    (corfu-auto t))
+
+  (use-package emacs
+    :init
+    (setq completion-cycle-threshold 3)
+    (setq tab-always-indent 'complete))
+
   (use-package company
+    :disabled t
     :hook (prog-mode . company-mode)
     :bind (:map company-active-map
                 ("<return>" . nil)
@@ -381,8 +396,27 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :hook ((python-mode c++-mode c-mode) . eglot-ensure)
     :config
     (setq eglot-autoshutdown t)
-    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
-    (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
+    (add-to-list 'eglot-server-programs
+                 '((c++-mode c-mode) "clangd"))
+    (add-to-list 'eglot-server-programs
+                 '(python-mode . ("pyright-langserver" "--stdio"))))
+
+  (use-package tempel
+    :custom
+    (tempel-trigger-prefix "<")
+    :init
+    ;; Setup completion at point
+    (defun tempel-setup-capf ()
+      (setq-local completion-at-point-functions
+                  (cons #'tempel-complete
+                        completion-at-point-functions)))
+
+    (add-hook 'prog-mode-hook 'tempel-setup-capf)
+    (add-hook 'text-mode-hook 'tempel-setup-capf)
+    (setq tempel-path (concat
+                       user-emacs-directory
+                       "tempel-snippets.el")))
+
 #+end_src
 
 ** Git
@@ -599,7 +633,8 @@ The table below is used to generate the leader key bindings.
     "Generates the input key sequence from kbd compatible string KEYS."
     (interactive)
     (setq  unread-command-events
-           (nconc (listify-key-sequence (kbd KEYS)) unread-command-events)))
+           (nconc (listify-key-sequence (kbd KEYS))
+                  unread-command-events)))
 
   (defun rs/help ()
     (interactive)
@@ -659,35 +694,35 @@ The table below is used to generate the leader key bindings.
 
 #+begin_src emacs-lisp
 
-    (defun rs/zen--get-mode-state (mode)
-      "Returns t if MODE is set to non-nil else returns -1"
-      (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
+  (defun rs/zen--get-mode-state (mode)
+    "Returns t if MODE is set to non-nil else returns -1"
+    (if (boundp mode) (if (eq (eval mode) nil) -1 t) -1))
 
-    (defun rs/toggle-zen (&optional arg)
-      "Zen for intense focus"
-      (interactive "P")
-      (let ((arg (or arg 0)))
-        ;; Check if we need to turn off zen
-        (if (and (<= arg 0) (boundp 'rs/zen-restore-line-num))
+  (defun rs/toggle-zen (&optional arg)
+    "Zen for intense focus"
+    (interactive "P")
+    (let ((arg (or arg 0)))
+      ;; Check if we need to turn off zen
+      (if (and (<= arg 0) (boundp 'rs/zen-restore-line-num))
+          (progn
+            (display-line-numbers-mode rs/zen-restore-line-num)
+            (hide-mode-line-mode rs/zen-restore-mode-line)
+            (olivetti-mode -1)
+            (kill-local-variable 'rs/zen-restore-line-num)
+            (kill-local-variable 'rs/zen-restore-mode-line))
+        (if (and (not (boundp 'rs/zen-restore-line-num))
+                 (not (boundp 'rs/zen-restore-mode-line))
+                 (>= arg 0))
             (progn
-              (display-line-numbers-mode rs/zen-restore-line-num)
-              (hide-mode-line-mode rs/zen-restore-mode-line)
-              (olivetti-mode -1)
-              (kill-local-variable 'rs/zen-restore-line-num)
-              (kill-local-variable 'rs/zen-restore-mode-line))
-          (if (and (not (boundp 'rs/zen-restore-line-num))
-                   (not (boundp 'rs/zen-restore-mode-line))
-                   (>= arg 0))
-              (progn
-                (make-local-variable 'rs/zen-restore-line-num)
-                (setq rs/zen-restore-line-num
-                      (rs/zen--get-mode-state 'display-line-numbers-mode))
-                (make-local-variable 'rs/zen-restore-mode-line)
-                (setq rs/zen-restore-mode-line
-                      (rs/zen--get-mode-state 'hide-mode-line-mode))
-                (display-line-numbers-mode 0)
-                (hide-mode-line-mode t)
-                (olivetti-mode t))))))
+              (make-local-variable 'rs/zen-restore-line-num)
+              (setq rs/zen-restore-line-num
+                    (rs/zen--get-mode-state 'display-line-numbers-mode))
+              (make-local-variable 'rs/zen-restore-mode-line)
+              (setq rs/zen-restore-mode-line
+                    (rs/zen--get-mode-state 'hide-mode-line-mode))
+              (display-line-numbers-mode 0)
+              (hide-mode-line-mode t)
+              (olivetti-mode t))))))
 #+end_src
 
 * In the end
@@ -709,3 +744,9 @@ The table below is used to generate the leader key bindings.
     (load-file custom-file))
 
 #+end_src
+
+* Things to check out
+- Projectile
+- Project.el
+- Dired configuration
+- Yasnippets
