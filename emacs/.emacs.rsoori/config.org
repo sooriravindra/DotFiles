@@ -241,17 +241,6 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :hook (org-mode . org-indent-mode)
     :defer t)
 
-  (with-eval-after-load 'org
-    (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist
-                 '("s" . "src"))
-    (add-to-list 'org-structure-template-alist
-                 '("sh" . "src shell"))
-    (add-to-list 'org-structure-template-alist
-                 '("py" . "src python"))
-    (add-to-list 'org-structure-template-alist
-                 '("el" . "src emacs-lisp"))
-    )
   ;; Fancier bullets for org mode
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode)
@@ -411,7 +400,9 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     (add-hook 'prog-mode-hook 'tempel-setup-capf)
     (add-hook 'text-mode-hook 'tempel-setup-capf)
     (add-hook 'eglot-managed-mode-hook 'tempel-setup-capf)
-    (setq tempel-path (concat user-emacs-directory "tempel-snippets.el")))
+    (setq tempel-path (concat user-emacs-directory "tempel-snippets.el"))
+    :bind (:map tempel-map
+           ("<backtab>" . tempel-next)))
 
   ;; Snippet support with eglot
   (use-package yasnippet
@@ -753,4 +744,3 @@ The table below is used to generate the leader key bindings.
 - Projectile
 - Project.el
 - Dired configuration
-- Yasnippets
