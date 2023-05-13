@@ -1,6 +1,7 @@
 fundamental-mode ;; Available everywhere
 
-(today (format-time-string "%Y-%m-%d"))
+(today (format-time-string "%Y-%m-%d %a"))
+(now (format-time-string "%Y-%m-%d %H:%M"))
 
 prog-mode
 
@@ -157,3 +158,25 @@ org-mode
 (title- "#+title: " q n "#+author: Raveendra Soori" n "#+date: " (format-time-string "%Y-%m-%d") n "#+options: toc:nil" n
         "# #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup" n
         "# #+HTML_HEAD: <link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />")
+
+python-mode
+
+(scls "class " (p "MyClass") "(" (p "ParentClass") "):" n>
+      "def __init__(self"  (p ",*args, **kwargs" arglist) "):" n>
+      (let ((fields (split-string arglist ","))
+            (indent-level (current-indentation))
+            (body ""))
+        (dolist (arg (mapcar (lambda (p) (string-trim (car (string-split p "\=")))) fields) body)
+          (unless (or (string-empty-p arg) (string-prefix-p "*" arg))
+            (setq body (concat body (format "self.%s = %s\n%s" arg arg (make-string indent-level ?\s)))))))
+      n> q)
+
+(cls "class " (p "MyClass") ":" n>
+     "def __init__(self"  (p ",*args, **kwargs" arglist) "):" n>
+     (let ((fields (split-string arglist ","))
+           (indent-level (current-indentation))
+           (body ""))
+       (dolist (arg (mapcar (lambda (p) (string-trim (car (string-split p "\=")))) fields) body)
+         (unless (or (string-empty-p arg) (string-prefix-p "*" arg))
+           (setq body (concat body (format "self.%s = %s\n%s" arg arg (make-string indent-level ?\s)))))))
+     n> q)

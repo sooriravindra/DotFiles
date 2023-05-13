@@ -366,7 +366,9 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :custom
     (cortu-cycle t)
     (corfu-auto t)
-    (tab-always-indent 'complete))
+    (tab-always-indent 'complete)
+    :bind (:map corfu-map
+                ("RET" . nil)))
 
   ;; Disabled. Here for historic reasons
   (use-package company
