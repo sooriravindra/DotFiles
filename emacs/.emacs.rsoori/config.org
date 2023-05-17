@@ -285,7 +285,7 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
   ;; Morreee Vim
   (use-package evil-collection
-    :after evil
+    :after magit evil
     :config
     ;; Fix <SPC> as leader in evil-collection
     (defun fix-leader-translations (_mode mode-keymaps &rest _rest)
@@ -297,9 +297,6 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   ;; Snipe 'em
   (use-package evil-snipe
     :config (evil-snipe-mode 1))
-
-  ;; Commenting
-  (use-package comment-dwim-2)
 
   ;; Use gs to make jumps
   (use-package evil-easymotion
@@ -422,7 +419,6 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package magit
     :config
     (define-key magit-mode-map (kbd "SPC") 'rs/send-leader)
-    :bind ("C-x g" . magit-status)
     :custom (magit-display-buffer-function
              #'magit-display-buffer-same-window-except-diff-v1))
 
@@ -440,6 +436,17 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
       'git-gutter-fr:modified [224] nil nil '(center repeated))
     (define-fringe-bitmap
       'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+
+#+end_src
+
+** Code
+#+begin_src emacs-lisp
+  ;; Commenting
+  (use-package comment-dwim-2)
+
+  ;; Still editing vim config files?
+  (use-package vimrc-mode
+    :defer t)
 
 #+end_src
 
@@ -517,6 +524,7 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   ;; Profiler
   (use-package esup
     :defer t
+    :disabled t
     :pin melpa
     :config (setq esup-depth 0))
 
@@ -531,10 +539,6 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
   ;; Handy command to restart
   (use-package restart-emacs
-    :defer t)
-
-  ;; Still editing vim config files?
-  (use-package vimrc-mode
     :defer t)
 
 #+end_src
