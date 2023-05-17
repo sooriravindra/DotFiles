@@ -685,7 +685,8 @@ The table below is used to generate the leader key bindings.
                                    (list (nyan-create))))
                       )))
              ;; right portion
-             (format-mode-line (quote ("%m " (vc-mode vc-mode))))))))
+             (format-mode-line (quote ((vc-mode vc-mode)
+                                       "  " mode-name)))))))
 #+end_src
 * Zen UI
 
