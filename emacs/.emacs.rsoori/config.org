@@ -220,6 +220,8 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
       (add-hook 'emacs-startup-hook
                 'rs/center-scratch)))
 
+  (use-package mode-line-bell
+    :config (mode-line-bell-mode))
 #+end_src
 
 ** Org
@@ -564,6 +566,7 @@ The table below is used to generate the leader key bindings.
 | bl  | evil-switch-to-windows-last-buffer | Last buffer            |
 | f   |                                    | File                   |
 | ff  | affe-find                          | Fuzzy find             |
+| fg  | rs/buffer-file-name                | Copy & show file name  |
 | fr  | consult-recent-file                | Recent file            |
 | fs  | save-buffer                        | Save file              |
 | g   |                                    | Git                    |
@@ -648,6 +651,11 @@ The table below is used to generate the leader key bindings.
   (defun rs/kill-buffer ()
     (interactive)
     (kill-buffer (current-buffer)))
+
+  (defun rs/buffer-file-name ()
+    (interactive)
+    (kill-new buffer-file-name)
+    (message buffer-file-name))
 
 #+end_src
 
