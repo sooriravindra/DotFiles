@@ -662,7 +662,8 @@ The table below is used to generate the leader key bindings.
   (defun rs/formatted-evil-state ()
     "Return the evil state of current buffer with first letter capitalized."
     (concat " " (upcase (substring (symbol-name evil-state) 0 1))
-            (substring (symbol-name evil-state) 1) " ") )
+            ;; (substring (symbol-name evil-state) 1)
+            " ") )
 
   (defface rs/evil-state-face '((t (:foreground  "black"
                                                  :background "orange")))
@@ -690,7 +691,7 @@ The table below is used to generate the leader key bindings.
                       )))
              ;; right portion
              (format-mode-line (quote ((vc-mode vc-mode)
-                                       "  " mode-name)))))))
+                                       "  " mode-name " ")))))))
 #+end_src
 * Zen UI
 
