@@ -283,7 +283,8 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     ;; Local leader is <leader> m
     (evil-set-leader nil (kbd "<leader> m") t)
     (evil-ex-define-cmd "bw[ipeout]" 'rs/kill-buffer)
-    (evil-ex-define-cmd "smile" 'zone))
+    (evil-ex-define-cmd "smile" 'zone)
+    (evil-ex-define-cmd "W" 'save-buffer))
 
   ;; Morreee Vim
   (use-package evil-collection
