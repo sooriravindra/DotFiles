@@ -221,7 +221,10 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package mode-line-bell
     :config (mode-line-bell-mode))
 
-  (use-package moody)
+  (use-package moody
+    :custom
+    (moody-mode-line-height 42))
+
 #+end_src
 
 ** Org
@@ -773,10 +776,13 @@ The table below is used to generate the leader key bindings.
                                    (list (nyan-create))))
                       )))
              ;; right portion
-             (format-mode-line (quote ((:eval (rs/get-vc-string))
-                                       "  " mode-name " "
-                                       (:eval (when (eglot-current-server) (propertize (all-the-icons-octicon "primitive-dot") 'display '(raise 0.00))))
-                                       "    ")))))))
+             (format-mode-line
+              (quote ((:eval (rs/get-vc-string))
+                      "  " mode-name "  "
+                      (:eval (when (and (fboundp 'eglot-current-server)
+                                        (eglot-current-server))
+                               (all-the-icons-faicon "circle-o" :v-adjust 0.0)))
+                      "  ")))))))
 #+end_src
 * Zen UI
 
