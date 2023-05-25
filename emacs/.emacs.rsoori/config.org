@@ -442,6 +442,20 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
 #+end_src
 
+** Dired
+#+begin_src emacs-lisp
+  (use-package emacs ;;dired
+    :custom ((dired-listing-switches "-agho --group-directories-first"))
+    :config
+    (evil-collection-define-key 'normal 'dired-mode-map
+      "F" 'rs/dired-open-marked
+      "h" 'dired-single-up-directory
+      "l" 'dired-single-buffer))
+
+  (use-package dired-single
+    :commands (dired dired-jump))
+#+end_src
+
 ** Code
 #+begin_src emacs-lisp
   ;; Commenting
@@ -629,6 +643,12 @@ The table below is used to generate the leader key bindings.
 * Helper functions
 
 #+begin_src emacs-lisp
+  (defun rs/dired-open-marked ()
+    "Opens all the files marked in dired"
+    (interactive)
+    (dolist (each-file (dired-get-marked-files))
+      (find-file each-file)))
+
   (defun rs/center-scratch ()
     "Centers the contents of scratch buffer"
     (with-current-buffer "*scratch*"
