@@ -330,6 +330,7 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
   ;; Display vertico in posframe
   (use-package vertico-posframe
+    :if (display-graphic-p)
     :config (vertico-posframe-mode 1))
 
   ;; Orderless completion style
