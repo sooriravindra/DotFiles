@@ -184,8 +184,14 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :disabled t
     :config (load-theme 'dracula t))
 
+  (setq rs/mode-line-line-color "#101213")
   (use-package doom-themes
-    :config (load-theme 'doom-molokai t))
+    :config
+    (load-theme 'doom-molokai t)
+    (set-face-attribute 'mode-line          nil :overline   rs/mode-line-line-color)
+    (set-face-attribute 'mode-line          nil :underline  rs/mode-line-line-color)
+    (set-face-attribute 'mode-line-inactive nil :overline   rs/mode-line-line-color)
+    (set-face-attribute 'mode-line-inactive nil :underline  rs/mode-line-line-color))
 
   (use-package all-the-icons)
 
@@ -223,6 +229,7 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
   (use-package moody
     :custom
+    (x-underline-at-descent-line t)
     (moody-mode-line-height 42))
 
 #+end_src
@@ -689,57 +696,71 @@ The table below is used to generate the leader key bindings.
 
   (defun rs/get-modified-string ()
     (when (buffer-modified-p)
-      (concat " "
-              (propertize (all-the-icons-material "edit")
-                          'display '(raise -0.08))
-              "")))
+      (let ((icon (all-the-icons-material "edit" :v-adjust -0.2)))
+        (propertize
+         icon
+         'face `(:inherit ,(get-text-property 0 'face icon)
+                          :background ,(face-attribute 'default :background)
+                          :underline nil
+                          :overline nil)))))
 
   (defun rs/get-vc-string ()
     "Return a formatted string for the version control status"
     (if (string-prefix-p " Git" vc-mode)
         (concat
-         (propertize "|" 'face noface 'display
+         (propertize "|" 'face rs/slant-underline-face 'display
                      (moody-slant 'down
-                                  (face-attribute 'mode-line :background)
-                                  (face-attribute 'mode-line :background)
+                                  (if (moody-window-active-p)
+                                      (face-attribute 'mode-line :background)
+                                    (face-attribute 'mode-line-inactive
+                                                    :background))
+                                  rs/mode-line-line-color
                                   (face-attribute 'default :background)
                                   ))
          (propertize
           (concat " "
-                  (propertize (all-the-icons-octicon "git-branch") 'display
-                              '(raise 0.05))
+                  (all-the-icons-octicon "git-branch" :v-adjust 0.0)
                   " "
                   (substring vc-mode 5)
                   " ")
           'face '(face-attribute 'default :background))
-         (propertize "|" 'face noface 'display
+         (propertize "|" 'face rs/slant-overline-face 'display
                      (moody-slant 'down
                                   (face-attribute 'default :background)
-                                  (face-attribute 'default :background)
-                                  (face-attribute 'mode-line :background)
+                                  rs/mode-line-line-color
+                                  (if (moody-window-active-p)
+                                      (face-attribute 'mode-line :background)
+                                    (face-attribute 'mode-line-inactive
+                                                    :background))
                                   )))
       (when vc-mode (format "%s" vc-mode))))
 
   (defun rs/mode-line-format (left right)
     "Return a string of `window-width' length.
-     Containing LEFT, and RIGHT aligned respectively."
+               Containing LEFT, and RIGHT aligned respectively."
     (let ((available-width (- (window-total-width) (length left) 1)))
       (format (format "%%s %%%ds " available-width) left right)))
 
   (defun rs/formatted-evil-state ()
     "Return the evil state of current buffer with first letter capitalized."
     (concat ""
-            ;; (propertize (all-the-icons-octicon "triangle-right") 'display '(raise -0.03))
+            ;; (all-the-icons-octicon "triangle-right" :v-adjust 0.0)
             " "
             (upcase (substring (symbol-name evil-state) 0 1))
             ;; (substring (symbol-name evil-state) 1)
             " "))
 
-  (defface rs/evil-state-face '((t (:foreground  "black"
-                                                 :background "orange")))
-    "Face for evil state in mode-line.")
+  (setq rs/evil-state-face (list :overline rs/mode-line-line-color
+                                 :underline rs/mode-line-line-color
+                                 :foreground  "#000000"
+                                 :background "#FFA500"))
+  (setq rs/slant-underline-face (list :overline nil
+                                      :underline rs/mode-line-line-color
+                                      :background (face-attribute 'default :background)))
+  (setq rs/slant-overline-face (list :underline nil
+                                     :overline rs/mode-line-line-color
+                                     :background (face-attribute 'default :background)))
 
-  (setq noface (list :overline nil :underline nil :background (face-attribute 'default :background)))
   (setq-default
    mode-line-format
    '((:eval (rs/mode-line-format
@@ -749,28 +770,35 @@ The table below is used to generate the leader key bindings.
                       (:eval
                        (when (bound-and-true-p evil-local-mode)
                          (let ((formatted-state (rs/formatted-evil-state)))
-                           (if (and (fboundp 'mode-line-window-selected-p)
-                                    (mode-line-window-selected-p))
+                           (if (moody-window-active-p)
                                (propertize formatted-state
-                                           'face 'rs/evil-state-face)
+                                           'face rs/evil-state-face)
                              (propertize formatted-state)))))
                       (:eval (propertize
-                              "|" 'face noface 'display
+                              "|" 'face rs/slant-underline-face 'display
                               (moody-slant
-                               'down "orange"  "orange"
+                               'down (if (moody-window-active-p) "#FFA500" (face-attribute 'mode-line-inactive :background))  rs/mode-line-line-color
                                (face-attribute 'default :background))))
+                      (:eval (let ((icon (all-the-icons-icon-for-mode major-mode :v-adjust -0.1)))
+                               (propertize icon 'face `(:inherit ,(get-text-property 0 'face icon) :background ,(face-attribute 'default :background) :underline nil :overline nil))))
                       (:eval (propertize
                               (concat
-                               (rs/get-modified-string)
                                " "
-                               (car (propertized-buffer-identification (buffer-name)))
+                               (car
+                                (propertized-buffer-identification
+                                 (buffer-name)))
                                " ")
                               'face '(face-attribute 'default :background)))
+                      (:eval (rs/get-modified-string))
                       (:eval (propertize
-                              "|" 'face noface 'display
+                              "|" 'face rs/slant-underline-face 'display
                               (moody-slant
-                               'up (face-attribute 'mode-line :background)
-                               (face-attribute 'default :background)
+                               'up
+                               (if (moody-window-active-p)
+                                   (face-attribute 'mode-line :background)
+                                 (face-attribute 'mode-line-inactive
+                                                 :background))
+                               rs/mode-line-line-color
                                (face-attribute 'default :background))))
                       " %l:%c"
                       " " (:eval (when (fboundp 'nyan-create)
