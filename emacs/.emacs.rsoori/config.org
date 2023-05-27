@@ -717,10 +717,14 @@ The table below is used to generate the leader key bindings.
                                   rs/mode-line-line-color
                                   (face-attribute 'default :background)
                                   ))
+         (let ((icon (all-the-icons-octicon "git-branch" :v-adjust 0.0)))
+           (propertize icon 'face
+                       `(:inherit ,(get-text-property 0 'face icon)
+                                  :background
+                                  ,(face-attribute 'default :background)
+                                  :underline nil :overline nil)))
          (propertize
           (concat " "
-                  (all-the-icons-octicon "git-branch" :v-adjust 0.0)
-                  " "
                   (substring vc-mode 5)
                   " ")
           'face '(face-attribute 'default :background))
@@ -737,8 +741,13 @@ The table below is used to generate the leader key bindings.
 
   (defun rs/mode-line-format (left right)
     "Return a string of `window-width' length.
-               Containing LEFT, and RIGHT aligned respectively."
-    (let ((available-width (- (window-total-width) (length left) 1)))
+                 Containing LEFT, and RIGHT aligned respectively."
+    (let ((available-width
+           (- (window-total-width)
+              (length left)
+              (* 4 (/ moody-mode-line-height
+                      (aref (font-info (face-font 'mode-line)) 2)))
+              1)))
       (format (format "%%s %%%ds " available-width) left right)))
 
   (defun rs/formatted-evil-state ()
@@ -807,11 +816,14 @@ The table below is used to generate the leader key bindings.
              ;; right portion
              (format-mode-line
               (quote ((:eval (rs/get-vc-string))
-                      "  " mode-name "  "
+                      "  " mode-name
                       (:eval (when (and (fboundp 'eglot-current-server)
                                         (eglot-current-server))
-                               (all-the-icons-faicon "circle-o" :v-adjust 0.0)))
-                      "  ")))))))
+                               (concat
+                                " "
+                                (all-the-icons-faicon "circle-o"
+                                                      :v-adjust 0.0))))
+                      " ")))))))
 #+end_src
 * Zen UI
 
