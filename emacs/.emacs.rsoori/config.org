@@ -271,57 +271,57 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
 ** Evil
 #+begin_src emacs-lisp
-  ;; Vim you shall
-  (use-package evil
-    :init
-    (setq evil-want-integration t
-          evil-want-keybinding nil
-          evil-want-C-u-scroll t
-          evil-symbol-word-search t)
-    :config
-    (evil-mode 1)
-    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-    (evil-set-undo-system 'undo-redo)
-    (evil-select-search-module 'evil-search-module 'evil-search)
-    (evil-set-initial-state 'messages-buffer-mode 'normal)
-    ;; Make <ctrl><space> leader in all modes
-    (evil-set-leader nil (kbd "C-SPC"))
-    ;; In addition, make <space> leader in normal and visual mode.
-    (evil-set-leader '(normal visual) (kbd "SPC"))
-    ;; Local leader is <leader> m
-    (evil-set-leader nil (kbd "<leader> m") t)
-    (evil-ex-define-cmd "bw[ipeout]" 'rs/kill-buffer)
-    (evil-ex-define-cmd "smile" 'zone)
-    (evil-ex-define-cmd "W" 'save-buffer))
+    ;; Vim you shall
+    (use-package evil
+      :init
+      (setq evil-want-integration t
+            evil-want-keybinding nil
+            evil-want-C-u-scroll t
+            evil-symbol-word-search t)
+      :config
+      (evil-mode 1)
+      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+      (evil-set-undo-system 'undo-redo)
+      (evil-select-search-module 'evil-search-module 'evil-search)
+      (evil-set-initial-state 'messages-buffer-mode 'normal)
+      ;; Make <ctrl><space> leader in all modes
+      (evil-set-leader nil (kbd "C-SPC"))
+      ;; In addition, make <space> leader in normal and visual mode.
+      (evil-set-leader '(normal visual) (kbd "SPC"))
+      ;; Local leader is <leader> m
+      (evil-set-leader nil (kbd "<leader> m") t)
+      (evil-ex-define-cmd "bw[ipeout]" 'rs/kill-buffer)
+      (evil-ex-define-cmd "smile" 'zone)
+      (evil-ex-define-cmd "W" 'save-buffer))
 
-  ;; Morreee Vim
-  (use-package evil-collection
-    :after magit evil
-    :config
-    ;; Fix <SPC> as leader in evil-collection
-    (defun fix-leader-translations (_mode mode-keymaps &rest _rest)
-      (evil-collection-translate-key 'normal mode-keymaps
-        (kbd "SPC") (kbd "C-SPC")))
-    (add-hook 'evil-collection-setup-hook #'fix-leader-translations)
-    (evil-collection-init))
+    ;; Morreee Vim
+    (use-package evil-collection
+      :after magit evil
+      :config
+      ;; Fix <SPC> as leader in evil-collection
+      (defun fix-leader-translations (_mode mode-keymaps &rest _rest)
+        (evil-collection-translate-key 'normal mode-keymaps
+          (kbd "SPC") (kbd "C-SPC")))
+      (add-hook 'evil-collection-setup-hook #'fix-leader-translations)
+      (evil-collection-init))
 
-  ;; Snipe 'em
-  (use-package evil-snipe
-    :config (evil-snipe-mode 1))
+    ;; Snipe 'em
+    (use-package evil-snipe
+      :config (evil-snipe-mode 1))
 
-  ;; Use gs to make jumps
-  (use-package evil-easymotion
-    :config (evilem-default-keybindings "gs"))
+    ;; Use gs to make jumps
+    (use-package evil-easymotion
+      :config (evilem-default-keybindings "gs"))
 
-  (use-package evil-matchit
-    :config (global-evil-matchit-mode 1))
+    (use-package evil-matchit
+      :config (global-evil-matchit-mode 1))
 
-  (use-package evil-goggles
-    :ensure t
-    :config
-    (evil-goggles-mode))
+    (use-package evil-goggles
+      :ensure t
+      :config
+      (evil-goggles-mode))
 #+end_src
 
 ** Completion
@@ -538,10 +538,11 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package pdf-tools
     :if (eq system-type `gnu/linux)
     :mode ("\\.pdf\\'" . pdf-view-mode)
-    :defer t
     :config
     (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-page))
+    (evil-set-initial-state 'pdf-view-mode 'emacs)
+    (add-hook 'pdf-view-mode-hook
+            (lambda () (blink-cursor-mode -1))))
 
   ;; Custom functions
 
@@ -741,7 +742,7 @@ The table below is used to generate the leader key bindings.
 
   (defun rs/mode-line-format (left right)
     "Return a string of `window-width' length.
-                 Containing LEFT, and RIGHT aligned respectively."
+                   Containing LEFT, and RIGHT aligned respectively."
     (let ((available-width
            (- (window-total-width)
               (length left)
@@ -824,6 +825,10 @@ The table below is used to generate the leader key bindings.
                                 (all-the-icons-faicon "circle-o"
                                                       :v-adjust 0.0))))
                       " ")))))))
+
+  (use-package evil-anzu
+    :after evil
+    :config (global-anzu-mode))
 #+end_src
 * Zen UI
 
@@ -879,8 +884,3 @@ The table below is used to generate the leader key bindings.
     (load-file custom-file))
 
 #+end_src
-
-* Things to check out
-- Projectile
-- Project.el
-- Dired configuration
