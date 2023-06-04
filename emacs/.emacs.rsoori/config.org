@@ -504,6 +504,12 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :if (eq system-type `gnu/linux)
     :defer t)
 
+  (use-package vterm-toggle
+    :if (eq system-type `gnu/linux)
+    :defer t
+    :init
+    (global-set-key (kbd "C-`") 'vterm-toggle))
+
 #+end_src
 
 ** Fuzzy finder
