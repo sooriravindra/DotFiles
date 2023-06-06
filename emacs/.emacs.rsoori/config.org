@@ -234,7 +234,7 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
 
 #+end_src
 
-** Org
+** Org mode
 #+begin_src emacs-lisp
   (use-package org
     :config
@@ -250,8 +250,16 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
       (set-face-attribute (car face) nil
                           :weight 'regular :height (cdr face)))
     (setq org-hide-emphasis-markers t)
+    (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
     :hook (org-mode . org-indent-mode)
     :defer t)
+
+  ;; Async support
+  (use-package async)
+
+  ;; Async org-babel execution
+  (use-package ob-async
+    :after org async)
 
   ;; Fancier bullets for org mode
   (use-package org-bullets
@@ -562,10 +570,6 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
     :disabled t
     :pin melpa
     :config (setq esup-depth 0))
-
-  ;; Async support
-  (use-package async
-    :defer t)
 
   ;; Show keyboard input
   (use-package command-log-mode
