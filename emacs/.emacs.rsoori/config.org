@@ -484,6 +484,10 @@ NOTE: We enable some default modes here and not in Generic Config > Default mode
   (use-package vimrc-mode
     :defer t)
 
+  ;; CMake (0,0)
+  (use-package cmake-mode
+    :defer t)
+
 #+end_src
 
 ** Projects
