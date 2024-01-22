@@ -27,6 +27,7 @@ extract() {
                 *.7z)        set -x; 7z x ./$1        ;;
                 *.xz)        set -x; unxz ./$1        ;;
                 *.exe)       set -x; cabextract ./$1  ;;
+                *.zst)       set -x; zstd --decompress ./$1  ;;
                 *)           echo "extract: '$1' - unknown archive method" ;;
             esac
             { set +x; } 2>/dev/null
