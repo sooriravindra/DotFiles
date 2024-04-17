@@ -14,8 +14,9 @@ set splitright
 " Set 256 colour mode
 set t_Co=256
 
-" Set truecolor if support exists
-if exists('+termguicolors')
+" Set truecolor if support exists.
+" Skip on Mac for now as it seems to cause issues
+if exists('+termguicolors') && !has('mac')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set termguicolors
