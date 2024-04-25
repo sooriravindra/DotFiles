@@ -13,7 +13,7 @@ destination=~
 function confirm_action {
     echo "$1"
     read -r -p ">> [Y/n] " response  
-    response=${response,,} # tolower  
+    response=`echo "$response" | tr "[:upper:]" "[:lower:]"` #to_lower
     if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then     
         eval $2
     else
