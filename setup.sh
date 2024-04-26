@@ -22,7 +22,7 @@ function confirm_action {
 }
 
 
-for package in "vim" "tmux" "bash" "emacs" "nvim" "spotifyd" "X"
+for package in "vim" "tmux" "bash" "emacs" "nvim" "spotifyd" "X" "alacritty"
 do
     package_string="Stow $package to $destination ? Package contains $(echo ; ls -A $package)"
     confirm_action "$package_string" "stow -t  $destination $package"
