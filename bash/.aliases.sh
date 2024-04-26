@@ -37,38 +37,42 @@ extract() {
     fi
 }
 
-# Open search query in default browser
-s() {
-    url="https://google.com/search?q="
-    query=`echo $@`
-    echo "$url$query"
-    xdg-open "$url$query" &>/dev/null &
-}
-
 # Open file / url
 o() {
     if [ -z "$1" ]; then 
         echo "Usage: o <path/file_name>" 
     else 
-        if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
-            # Windows Subsystem for Linux
-            powershell.exe /C start "$1"
-        else
-            xdg-open "$1" &>/dev/null &
-        fi
+        case "$(uname -sr)" in
+           Darwin*) # MacOS
+             open "$1"
+             ;;
+           Linux*Microsoft*) #WSL
+             powershell.exe /C start "$1"
+             ;;
+           Linux*) #Linux
+             xdg-open "$1" &>/dev/null &
+             ;;
+           CYGWIN*|MINGW*|MINGW32*|MSYS*)
+             echo 'To be implemented'
+             ;;
+           *)
+             echo 'Failed to determine OS'
+             ;;
+        esac
     fi
 }
+
+# Open search query in default browser
+s() {
+    url="https://google.com/search?q="
+    query=`echo $@`
+    echo "$url$query"
+    o "$url$query"
+}
+
 
 alias ls='ls --color=auto'
 alias la='ls -a'
 alias ll='ls -ltr'
 alias grep='grep --color=auto'
-alias ironcity='compas -t "~/bin/ironcity_attach"'
 alias ec='emacsclient -n -r -a ""'
-
-# Remove things that depend on xdg-open
-if [[ -z $(command -v xdg-open) ]]; then
-    unset s;
-    unset o;
-fi
-
